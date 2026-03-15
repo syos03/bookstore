@@ -62,9 +62,9 @@ export default function HomePage() {
       {/* HERO BANNER */}
       <section className="hero-banner">
         <div className="container">
-          <div className="hero-grid">
+          <div className="hero-grid-wrapper">
             <div className="hero-content animate-fade-up">
-              <div className="hero-badge" style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <div className="hero-badge">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 8, color: 'var(--accent)'}}><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>
                 Khám phá tri thức thư viện 2026
               </div>
@@ -76,18 +76,17 @@ export default function HomePage() {
               </p>
               <div className="hero-actions">
                 <Link href="/books" className="btn btn-primary btn-lg">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                   Mua Sắm Ngay
                 </Link>
                 <Link href="/books?sort=-soldCount" className="btn btn-outline-glass btn-lg">
-                  Xem Sách Bán Chạy
+                  Sách Bán Chạy
                 </Link>
               </div>
               <div className="hero-stats">
                 {[
-                  { num: '10K+', label: 'Tựa sách hay' },
-                  { num: '50K+', label: 'Độc giả tin tưởng' },
-                  { num: '4.9/5', label: 'Đánh giá tích cực' },
+                  { num: '10K+', label: 'Tựa sách' },
+                  { num: '50K+', label: 'Độc giả' },
+                  { num: '4.9/5', label: 'Đánh giá' },
                 ].map((stat) => (
                   <div key={stat.label}>
                     <div className="stat-num">{stat.num}</div>
@@ -98,19 +97,15 @@ export default function HomePage() {
             </div>
             
             {/* HÌNH ẢNH NỔI BẬT DẠNG DECOR */}
-            <div className="hero-images">
-              <div className="hero-glow"></div>
+            <div className="hero-decor-grid">
+              <div className="decor-glow"></div>
               {featured.slice(0, 4).map((book, i) => (
                 <Link href={`/books/${book.slug || book._id}`} key={book._id}
-                  style={{
-                    transform: i % 2 === 1 ? 'translateY(32px)' : 'none',
-                    transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                  }}>
-                  <div className="glass-panel" style={{ padding: 12, borderRadius: 4, background: 'var(--bg-main)', border: '1px solid var(--border-strong)' }}>
+                  className={`decor-item decor-item-${i}`}>
+                  <div className="glass-panel decor-panel">
                     <img
                       src={book.coverImage || book.images?.[0]?.url || 'https://placehold.co/200x300?text=No+Image'}
                       alt={book.title}
-                      style={{ width: '100%', aspectRatio: '2/3', objectFit: 'cover', borderRadius: 2, boxShadow: 'var(--shadow)' }}
                     />
                   </div>
                 </Link>
@@ -118,6 +113,47 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+
+        <style jsx>{`
+          .hero-grid-wrapper {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+            align-items: center;
+          }
+          .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 48px;
+            border-top: 1px solid var(--border-strong);
+            padding-top: 32px;
+          }
+          .stat-num { font-size: 24px; fontWeight: 900; color: var(--secondary); font-family: var(--font-heading); }
+          .stat-label { font-size: 14px; color: var(--text-secondary); fontWeight: 500; }
+          
+          .hero-decor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; position: relative; z-index: 1; }
+          .decor-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120%; height: 120%; background: radial-gradient(circle, var(--border-strong) 0%, transparent 60%); z-index: -1; filter: blur(40px); opacity: 0.3; }
+          .decor-panel { padding: 12px; border-radius: 4px; background: var(--bg-main); border: 1px solid var(--border-strong); }
+          .decor-panel img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 2px; box-shadow: var(--shadow); }
+          .decor-item { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+          .decor-item-1, .decor-item-3 { transform: translateY(32px); }
+
+          @media (max-width: 991px) {
+            .hero-grid-wrapper { grid-template-columns: 1fr; gap: 48px; text-align: center; }
+            .hero-content { margin: 0 auto; }
+            .hero-badge { justify-content: center; }
+            .hero-stats { justify-content: center; gap: 24px; }
+            .hero-actions { justify-content: center; }
+            .hero-decor-grid { max-width: 400px; margin: 0 auto; }
+          }
+          @media (max-width: 640px) {
+            .hero-stats { gap: 16px; padding-top: 24px; margin-top: 32px; }
+            .stat-num { font-size: 18px; }
+            .stat-label { font-size: 12px; }
+            .hero-decor-grid { gap: 12px; }
+            .decor-panel { padding: 8px; }
+          }
+        `}</style>
       </section>
 
       <div className="container">
@@ -196,16 +232,36 @@ export default function HomePage() {
 
         {/* PROMOTION BANNER */}
         <section className="section" style={{ paddingBottom: 0 }}>
-          <div className="glass-panel promotion-banner">
-            <div>
-              <div style={{ display: 'inline-block', background: 'var(--primary)', color: 'white', padding: '4px 12px', borderRadius: 2, fontSize: 13, fontWeight: 700, fontFamily: 'var(--font-heading)', marginBottom: 16 }}>ĐIỂN TÍCH THƯ QUÁN</div>
-              <h3 style={{ fontSize: 'clamp(24px, 5vw, 32px)', fontWeight: 900, marginBottom: 12, fontFamily: 'var(--font-heading)' }}>Thưởng Lãm Sách Quý - Giao Tận Tay</h3>
-              <p style={{ opacity: 0.8, fontSize: 16, maxWidth: 500, lineHeight: 1.6 }}>Miễn phí giao hàng toàn quốc cho thư khế từ 300.000đ. Đóng gói cẩn mật, giữ gìn từng trang giấy quý.</p>
+          <div className="promo-banner-card glass-panel">
+            <div className="promo-content">
+              <div className="promo-badge">ĐIỂN TÍCH THƯ QUÁN</div>
+              <h3 className="promo-title">Thưởng Lãm Sách Quý - Giao Tận Tay</h3>
+              <p className="promo-text">Miễn phí giao hàng toàn quốc cho thư khế từ 300.000đ. Đóng gói cẩn mật, giữ gìn từng trang giấy quý.</p>
             </div>
-            <Link href="/books" className="btn btn-lg" style={{ background: 'var(--bg-main)', color: 'var(--primary)', fontWeight: 800, padding: '16px 36px', border: '1px solid var(--border-strong)' }}>
+            <Link href="/books" className="btn btn-lg promo-btn">
               Tham quan thư viện <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: 8}}><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
             </Link>
           </div>
+          
+          <style jsx>{`
+            .promo-banner-card {
+              background: var(--secondary);
+              padding: 48px; color: var(--bg-card); border: 4px double var(--border-strong) !important;
+              display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 32px;
+              box-shadow: var(--shadow-lg); borderRadius: 4px;
+            }
+            .promo-badge { display: inline-block; background: var(--primary); color: white; padding: 4px 12px; borderRadius: 2px; fontSize: 13px; fontWeight: 700; font-family: var(--font-heading); marginBottom: 16px; }
+            .promo-title { fontSize: 32px; fontWeight: 900; marginBottom: 12px; fontFamily: var(--font-heading); }
+            .promo-text { opacity: 0.8; fontSize: 16px; maxWidth: 500px; lineHeight: 1.6; }
+            .promo-btn { background: var(--bg-main) !important; color: var(--primary) !important; fontWeight: 800; padding: 16px 36px; border: 1px solid var(--border-strong); }
+
+            @media (max-width: 768px) {
+              .promo-banner-card { padding: 32px 24px; text-align: center; justify-content: center; }
+              .promo-title { fontSize: 24px; }
+              .promo-text { fontSize: 14px; margin: 0 auto; }
+              .promo-btn { width: 100%; }
+            }
+          `}</style>
         </section>
       </div>
     </div>

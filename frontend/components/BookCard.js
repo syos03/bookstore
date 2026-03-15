@@ -96,8 +96,8 @@ export default function BookCard({ book }) {
               )}
             </div>
           </div>
-          {/* Overlay chứa 2 nút hành động (Trượt từ dưới lên) */}
-          <div className="book-actions-overlay">
+          {/* Overlay chứa 2 nút hành động (Trượt từ dưới lên - Chỉ Desktop) */}
+          <div className="book-actions-overlay desktop-only">
             <button className="btn-action-sm btn-action-cart" onClick={handleAddToCart} title="Thêm vào giỏ">
                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
                Giỏ
@@ -106,7 +106,43 @@ export default function BookCard({ book }) {
                Mua Sách
             </button>
           </div>
+
+          {/* Nút hành động cho Mobile (Luôn hiển thị) */}
+          <div className="book-actions-mobile mobile-only">
+            <button className="mobile-cart-btn" onClick={handleAddToCart}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            </button>
+            <button className="mobile-buy-btn" onClick={handleBuyNow}>Mua</button>
+          </div>
         </div>
+
+        <style jsx>{`
+          .mobile-only { display: none; }
+          @media (min-width: 992px) {
+            .desktop-only { display: flex; }
+          }
+          @media (max-width: 991px) {
+            .desktop-only { display: none; }
+            .mobile-only { display: flex; }
+            .book-actions-mobile {
+              margin-top: 12px;
+              gap: 8px;
+              width: 100%;
+            }
+            .mobile-cart-btn {
+              width: 40px; height: 36px;
+              display: flex; align-items: center; justify-content: center;
+              background: var(--bg-main); border: 1px solid var(--border-strong);
+              border-radius: var(--radius-sm); color: var(--text-primary);
+            }
+            .mobile-buy-btn {
+              flex: 1; height: 36px;
+              display: flex; align-items: center; justify-content: center;
+              background: var(--primary); color: white;
+              font-size: 13px; font-weight: 700; border-radius: var(--radius-sm);
+            }
+          }
+        `}</style>
       </div>
     </Link>
   );
