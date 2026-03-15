@@ -70,14 +70,17 @@ function BooksContent() {
 
   return (
     <div className="container" style={{ paddingTop: 32, paddingBottom: 48 }}>
-      <div className="layout-with-sidebar">
+      <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 28 }}>
         {/* Sidebar Filters */}
         <aside>
-          <div className="card" style={{ padding: 20, position: 'sticky', top: 80 }}>
-            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 20 }}>🔍 Bộ Lọc</h3>
+          <div className="card" style={{ position: 'sticky', top: 80 }}>
+            <h3 style={{ fontSize: 15, fontWeight: 800, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{color: 'var(--primary)'}}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+              Bộ Lọc
+            </h3>
 
-            <div style={{ marginBottom: 20 }}>
-              <div className="form-label">Sắp xếp</div>
+            <div style={{ marginBottom: 16 }}>
+              <div className="form-label" style={{ fontSize: 11 }}>Sắp xếp</div>
               <select className="form-control" value={filters.sort}
                 onChange={(e) => { setFilters(f => ({ ...f, sort: e.target.value })); setPage(1); }}>
                 {sortOptions.map(opt => (
@@ -86,8 +89,8 @@ function BooksContent() {
               </select>
             </div>
 
-            <div style={{ marginBottom: 20 }}>
-              <div className="form-label">Danh mục</div>
+            <div style={{ marginBottom: 16 }}>
+              <div className="form-label" style={{ fontSize: 11 }}>Danh mục</div>
               <select className="form-control" value={filters.category}
                 onChange={(e) => { setFilters(f => ({ ...f, category: e.target.value })); setPage(1); }}>
                 <option value="">Tất cả</option>
@@ -97,26 +100,26 @@ function BooksContent() {
               </select>
             </div>
 
-            <div style={{ marginBottom: 20 }}>
-              <div className="form-label">Khoảng giá</div>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <input className="form-control" type="number" placeholder="Từ" style={{ flex: 1 }}
+            <div style={{ marginBottom: 16 }}>
+              <div className="form-label" style={{ fontSize: 11 }}>Khoảng giá</div>
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 10 }}>
+                <input className="form-control" type="number" placeholder="Từ" style={{ flex: 1, padding: '8px 10px' }}
                   value={filters['price[gte]']}
                   onChange={(e) => setFilters(f => ({ ...f, 'price[gte]': e.target.value }))}
                 />
-                <span>-</span>
-                <input className="form-control" type="number" placeholder="Đến" style={{ flex: 1 }}
+                <span style={{color: 'var(--text-muted)'}}>-</span>
+                <input className="form-control" type="number" placeholder="Đến" style={{ flex: 1, padding: '8px 10px' }}
                   value={filters['price[lte]']}
                   onChange={(e) => setFilters(f => ({ ...f, 'price[lte]': e.target.value }))}
                 />
               </div>
-              <button className="btn btn-primary btn-full btn-sm" style={{ marginTop: 10 }}
+              <button className="btn btn-primary btn-full btn-sm"
                 onClick={() => { setPage(1); fetchBooks(); }}>
                 Áp dụng
               </button>
             </div>
 
-            <button className="btn btn-ghost btn-full btn-sm"
+            <button className="btn btn-ghost btn-full btn-sm" style={{ fontSize: 12, opacity: 0.7 }}
               onClick={() => { setFilters({ sort: '-createdAt', category: '', 'price[gte]': '', 'price[lte]': '' }); setPage(1); }}>
               ✕ Xóa bộ lọc
             </button>
@@ -132,7 +135,7 @@ function BooksContent() {
           </div>
 
           {loading ? (
-            <div className="grid-books">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }}>
               {Array(8).fill(0).map((_, i) => (
                 <div key={i} className="card">
                   <div className="skeleton" style={{ aspectRatio: '3/4' }}></div>

@@ -55,14 +55,21 @@ export default function Navbar() {
 
           {/* Brand */}
           <Link href="/" className="navbar-brand">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 8, display: 'inline-block', verticalAlign: 'middle'}}><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
-            <span className="brand-text">Book<span>Store</span></span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 6, display: 'inline-block', verticalAlign: 'middle'}}><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+            <span className="brand-text" style={{ fontSize: 22 }}>Book<span>Store</span></span>
           </Link>
 
           {/* Nav Links & Search Container (Responsive) */}
           <div className={`navbar-mobile-wrapper ${isMobileMenuOpen ? 'active' : ''}`}>
+            {/* Links - Desktop side-by-side with brand */}
+            <div className="nav-links">
+              <Link href="/books" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Sách</Link>
+              <Link href="/books?sort=-soldCount" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Bán Chạy</Link>
+              <Link href="/books?sort=-createdAt" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Mới</Link>
+            </div>
+
             {/* Search */}
-            <div className="navbar-search">
+            <div className="navbar-search" style={{ margin: '0 24px' }}>
               <input
                 type="text"
                 placeholder="Tìm tên sách, tác giả..."
@@ -70,14 +77,15 @@ export default function Navbar() {
                 onChange={(e) => handleSearch(e.target.value)}
                 onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                 onFocus={() => searchResults.length > 0 && setShowDropdown(true)}
+                style={{ padding: '8px 40px 8px 16px', fontSize: 13.5 }}
               />
               <span className="search-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               </span>
 
               {/* Search Dropdown */}
               {showDropdown && searchResults.length > 0 && (
-                <div className="search-dropdown">
+                <div className="search-dropdown" style={{ top: 'calc(100% + 8px)' }}>
                   {searchResults.map((book) => (
                     <Link
                       key={book._id}
@@ -88,23 +96,16 @@ export default function Navbar() {
                       <img
                         src={book.thumbnail || book.coverImage || 'https://placehold.co/40x60?text=S%C3%A1ch'}
                         alt={book.title}
-                        style={{ width: 40, height: 52, objectFit: 'cover', borderRadius: 4 }}
+                        style={{ width: 32, height: 44, objectFit: 'cover', borderRadius: 4 }}
                       />
                       <div>
-                        <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 2 }}>{book.title}</div>
+                        <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 2 }}>{book.title}</div>
                         <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{book.author}</div>
                       </div>
                     </Link>
                   ))}
                 </div>
               )}
-            </div>
-
-            {/* Links */}
-            <div className="nav-links">
-              <Link href="/books" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Sách</Link>
-              <Link href="/books?sort=-soldCount" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Bán Chạy</Link>
-              <Link href="/books?sort=-createdAt" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Mới Nhất</Link>
             </div>
           </div>
 
@@ -137,7 +138,7 @@ export default function Navbar() {
             
             .navbar-mobile-wrapper {
               position: fixed;
-              top: 72px;
+              top: 64px;
               left: 0;
               width: 100%;
               background: var(--bg-card);
