@@ -46,10 +46,14 @@ const createVNPayUrl = catchAsync(async (req, res, next) => {
       return obj;
     }, {});
 
-  const signData = new URLSearchParams(vnp_Params).toString();
-  const hmac = crypto.createHmac('sha512', secretKey);
-  const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
-  vnp_Params['vnp_SecureHash'] = signed;
+  try {
+    const signData = new URLSearchParams(vnp_Params).toString();
+    const hmac = crypto.createHmac('sha512', secretKey || 'fallback_secret');
+    const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+    vnp_Params['vnp_SecureHash'] = signed;
+  } catch (err) {
+    logger.warn('⚠️ Lỗi tạo hash VNPay, đang dùng mode simulation.');
+  }
 
   // simulation mode
   const paymentUrl = `${process.env.CLIENT_URL}/payment/simulate?orderId=${order._id}&method=vnpay&orderCode=${order.orderCode}&amount=${order.totalPrice}`;
