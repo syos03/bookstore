@@ -110,23 +110,19 @@ const createOrder = catchAsync(async (req, res, next) => {
     await Cart.findOneAndUpdate({ user: req.user.id }, { items: [] });
   }
 
-  // Gửi email xác nhận
-  try {
-    const user = req.user;
-    await sendEmail({
-      to: user.email,
-      subject: `Xác nhận đơn hàng #${order.orderCode} - BookStore`,
-      html: `
-        <h2>Xin chào ${user.name}!</h2>
-        <p>Đơn hàng <strong>#${order.orderCode}</strong> của bạn đã được đặt thành công.</p>
-        <p>Tổng tiền: <strong>${totalPrice.toLocaleString('vi-VN')}đ</strong></p>
-        <p>Phương thức thanh toán: <strong>${paymentMethod.toUpperCase()}</strong></p>
-        <p>Trân trọng,<br><strong>BookStore Team</strong></p>
-      `,
-    });
-  } catch (emailError) {
-    console.warn('Không thể gửi email xác nhận:', emailError.message);
-  }
+  // Gửi email xác nhận (Chạy ngầm, không await để tránh treo đơn hàng)
+  const user = req.user;
+  sendEmail({
+    to: user.email,
+    subject: `Xác nhận đơn hàng #${order.orderCode} - BookStore`,
+    html: `
+      <h2>Xin chào ${user.name}!</h2>
+      <p>Đơn hàng <strong>#${order.orderCode}</strong> của bạn đã được đặt thành công.</p>
+      <p>Tổng tiền: <strong>${totalPrice.toLocaleString('vi-VN')}đ</strong></p>
+      <p>Phương thức thanh toán: <strong>${paymentMethod.toUpperCase()}</strong></p>
+      <p>Trân trọng,<br><strong>BookStore Team</strong></p>
+    `,
+  }).catch(err => console.error('❌ Lỗi gửi email ngầm:', err.message));
 
   const populatedOrder = await Order.findById(order._id)
     .populate('user', 'name email')
