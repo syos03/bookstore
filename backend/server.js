@@ -47,7 +47,8 @@ app.use(helmet({
 app.use(cors({
   origin: [
     process.env.CLIENT_URL || 'http://localhost:3000',
-    process.env.ADMIN_URL || 'http://localhost:3001'
+    process.env.ADMIN_URL || 'http://localhost:3001',
+    'https://bookstore-k2ep42l5r-hancfm-9893s-projects.vercel.app' // Vercel Origin
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
