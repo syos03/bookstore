@@ -88,10 +88,10 @@ export default function BookDetailPage({ params }) {
   return (
     <div className="container" style={{ paddingTop: 32, paddingBottom: 48 }}>
       {/* BOOK DETAIL */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 48, marginBottom: 48 }}>
+      <div className="layout-with-sidebar" style={{ gap: 48, marginBottom: 48 }}>
         {/* Images */}
         <div>
-          <div style={{ position: 'sticky', top: 80 }}>
+          <div>
             <div style={{ aspectRatio: '3/4', background: 'var(--border-light)', borderRadius: 16, overflow: 'hidden', marginBottom: 16 }}>
               <img 
                 src={selectedImage || 'https://placehold.co/400x560?text=No+Image'} 
@@ -104,7 +104,7 @@ export default function BookDetailPage({ params }) {
               />
             </div>
             {book.images?.length > 1 && (
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
                 {book.images.map((img, i) => (
                   <div key={i} onClick={() => setSelectedImage(img.url)}
                     style={{ width: 64, height: 80, border: `2px solid ${selectedImage === img.url ? 'var(--primary)' : 'var(--border)'}`, borderRadius: 8, overflow: 'hidden', cursor: 'pointer' }}>
@@ -125,18 +125,18 @@ export default function BookDetailPage({ params }) {
         </div>
 
         {/* Info */}
-        <div>
+        <div style={{ textAlign: 'inherit' }}>
           <div className="badge badge-primary" style={{ marginBottom: 12 }}>
             {book.category?.name}
           </div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.3, marginBottom: 8 }}>{book.title}</h1>
+          <h1 style={{ fontSize: 'clamp(20px, 5vw, 26px)', fontWeight: 800, lineHeight: 1.3, marginBottom: 8 }}>{book.title}</h1>
           <p style={{ color: 'var(--text-secondary)', marginBottom: 16 }}>
             Tác giả: <strong>{book.author}</strong>
             {book.publisher && <> | NXB: <strong>{book.publisher}</strong></>}
           </p>
 
           {/* Rating */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
             <span className="stars">{'★'.repeat(Math.round(book.rating))}{'☆'.repeat(5 - Math.round(book.rating))}</span>
             <span style={{ fontWeight: 700 }}>{book.rating}</span>
             <span style={{ color: 'var(--text-muted)', fontSize: 14 }}>({book.numReviews} đánh giá)</span>
@@ -145,13 +145,13 @@ export default function BookDetailPage({ params }) {
 
           {/* Price */}
           <div style={{ background: 'var(--bg)', borderRadius: 12, padding: 20, marginBottom: 24 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 8 }}>
-              <span style={{ fontSize: 32, fontWeight: 900, color: 'var(--primary)' }}>{formatPrice(finalPrice)}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 8, flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 'clamp(24px, 6vw, 32px)', fontWeight: 900, color: 'var(--primary)' }}>{formatPrice(finalPrice)}</span>
               {book.discount > 0 && (
-                <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ fontSize: 18, color: 'var(--text-muted)', textDecoration: 'line-through' }}>{formatPrice(book.price)}</span>
                   <span className="badge badge-primary">-{book.discount}%</span>
-                </>
+                </div>
               )}
             </div>
             <p style={{ fontSize: 13, color: 'var(--success)', fontWeight: 600 }}>
@@ -160,7 +160,7 @@ export default function BookDetailPage({ params }) {
           </div>
 
           {/* Book Meta */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 24, fontSize: 14 }}>
+          <div className="grid-2-col" style={{ marginBottom: 24, fontSize: 14 }}>
             {[
               { label: 'Số trang', value: book.pages ? `${book.pages} trang` : '-' },
               { label: 'Năm XB', value: book.publishYear || '-' },

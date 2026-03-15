@@ -45,8 +45,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', padding: 20 }}>
-      <div className="card" style={{ width: '100%', maxWidth: 420, padding: 40 }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', padding: '24px 16px' }}>
+      <div className="card login-card" style={{ width: '100%', maxWidth: 420, padding: 'clamp(24px, 5vw, 40px)' }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ fontSize: 40, marginBottom: 8 }}>📚</div>
           <h1 style={{ fontSize: 26, fontWeight: 900, color: 'var(--primary)' }}>BookStore</h1>

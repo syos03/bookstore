@@ -69,7 +69,7 @@ export default function CartPage() {
           <Link href="/books" className="btn btn-primary btn-lg">📚 Tiếp tục mua sắm</Link>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 28 }}>
+        <div className="layout-with-sidebar" style={{ gridTemplateColumns: '1fr 360px' }}>
           {/* Cart Items */}
           <div className="card" style={{ padding: '20px 24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>

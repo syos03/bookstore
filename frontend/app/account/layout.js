@@ -54,7 +54,7 @@ export default function AccountLayout({ children }) {
 
   return (
     <div className="container" style={{ paddingTop: 32, paddingBottom: 64 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 32 }}>
+      <div className="layout-with-sidebar">
         
         {/* Sidebar */}
         <div className="card" style={{ padding: '24px 16px', height: 'fit-content' }}>

@@ -70,7 +70,7 @@ function BooksContent() {
 
   return (
     <div className="container" style={{ paddingTop: 32, paddingBottom: 48 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 28 }}>
+      <div className="layout-with-sidebar">
         {/* Sidebar Filters */}
         <aside>
           <div className="card" style={{ padding: 20, position: 'sticky', top: 80 }}>
@@ -132,7 +132,7 @@ function BooksContent() {
           </div>
 
           {loading ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }}>
+            <div className="grid-books">
               {Array(8).fill(0).map((_, i) => (
                 <div key={i} className="card">
                   <div className="skeleton" style={{ aspectRatio: '3/4' }}></div>

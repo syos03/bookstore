@@ -96,14 +96,14 @@ export default function CheckoutPage() {
         })}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 28 }}>
+      <div className="layout-with-sidebar" style={{ gridTemplateColumns: '1fr 360px' }}>
         {/* Main */}
         <div>
           {/* Step 1: Shipping Address */}
           {step === 1 && (
             <div className="card" style={{ padding: 28 }}>
               <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20 }}>📍 Địa chỉ giao hàng</h2>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div className="grid-2-col">
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label">Họ và tên *</label>
                   <input className="form-control" placeholder="Nguyễn Văn A" value={form.fullName} onChange={e => setForm(f => ({ ...f, fullName: e.target.value }))} />
@@ -117,7 +117,7 @@ export default function CheckoutPage() {
                 <label className="form-label">Địa chỉ *</label>
                 <input className="form-control" placeholder="Số nhà, tên đường" value={form.street} onChange={e => setForm(f => ({ ...f, street: e.target.value }))} />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
+              <div className="grid-3-col">
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label">Phường/Xã</label>
                   <input className="form-control" placeholder="Phường Bến Nghé" value={form.ward} onChange={e => setForm(f => ({ ...f, ward: e.target.value }))} />
