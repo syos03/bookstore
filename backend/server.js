@@ -92,6 +92,21 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// THÊM TẠM THỜI: API để nạp dữ liệu (Seed) trên Render (Dùng 1 lần rồi xóa)
+app.get('/api/seed', async (req, res) => {
+  try {
+    const { exec } = require('child_process');
+    exec('node seed.js', (error, stdout, stderr) => {
+      if (error) {
+        return res.status(500).json({ success: false, error: error.message });
+      }
+      res.status(200).json({ success: true, message: 'Đã nạp dữ liệu thành công!', logs: stdout });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({
