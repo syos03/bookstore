@@ -190,7 +190,7 @@ export default function BooksManagement() {
                       <tr key={book._id}>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                            <img src={book.thumbnail || 'https://placehold.co/40x50?text=Sách'} alt="" style={{ width: 40, height: 50, objectFit: 'cover', borderRadius: 4 }} />
+                            <img src={(book.thumbnail || '').replace('http://', 'https://') || 'https://placehold.co/40x50?text=Sách'} alt="" style={{ width: 40, height: 50, objectFit: 'cover', borderRadius: 4 }} />
                             <div>
                               <div style={{ fontWeight: 600, maxWidth: 250, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{book.title}</div>
                               <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{book.author}</div>
@@ -304,7 +304,10 @@ export default function BooksManagement() {
 
                   <div className="form-group">
                     <label className="form-label">Link ảnh bìa (URL)</label>
-                    <input className="form-control" placeholder="Dán link ảnh tại đây (ưu tiên hơn upload)" value={form.coverImage} onChange={e => setForm({...form, coverImage: e.target.value})} />
+                    <input className="form-control" placeholder="Dán link ảnh tại đây (ví dụ: .jpg, .png...)" value={form.coverImage} onChange={e => setForm({...form, coverImage: e.target.value})} />
+                    <small style={{ color: 'var(--text-muted)', fontSize: '11px', display: 'block', marginTop: '4px' }}>
+                      * Lưu ý: Phải là link <b>trực tiếp của file ảnh</b> (chuột phải vào ảnh chọn "Sao chép địa chỉ hình ảnh"). Không phải link trang web.
+                    </small>
                   </div>
                   
                   <div className="form-group">
