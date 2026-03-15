@@ -37,6 +37,10 @@ require('./config/passport');
 
 const app = express();
 
+// Cấu hình bắt buộc khi chạy trên các dịch vụ Cloud (Render, Heroku, Vercel...)
+// để thư viện express-rate-limit bắt đúng IP người dùng.
+app.set('trust proxy', 1);
+
 // ==================== MIDDLEWARE ====================
 // Security
 app.use(helmet({
