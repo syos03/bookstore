@@ -19,7 +19,10 @@ router.put('/reset-password/:token', resetPassword);
 // Google OAuth
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: 'http://localhost:3000/auth/login?error=oauth_failed' }),
+  passport.authenticate('google', { 
+    session: false, 
+    failureRedirect: `${process.env.CLIENT_URL || ''}/auth/login?error=oauth_failed` 
+  }),
   googleCallback
 );
 
