@@ -10,7 +10,8 @@ export default function BookCard({ book }) {
     : book.price;
 
   const formatPrice = (p) => p?.toLocaleString('vi-VN') + 'đ';
-  const thumbnail = book.thumbnail || book.coverImage || book.images?.[0]?.url || '';
+  const rawThumbnail = book.thumbnail || book.coverImage || book.images?.[0]?.url || '';
+  const thumbnail = rawThumbnail.replace('http://', 'https://');
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
