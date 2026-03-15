@@ -124,41 +124,54 @@ export default function AccountLayout({ children }) {
         .account-nav {
           display: flex;
           flex-direction: column;
-          gap: 2px;
+          gap: 10px;
         }
         .account-nav-link {
-          padding: 10px 12px;
-          border-radius: 6px;
-          font-size: 13.5px;
+          padding: 12px 16px;
+          border-radius: 8px;
+          font-size: 14px;
           font-weight: 600;
           color: var(--text-secondary);
           transition: var(--transition);
+          border: 1px solid var(--border);
+          background: white;
+          display: flex;
+          align-items: center;
+          gap: 10px;
         }
         .account-nav-link:hover {
           background: var(--bg-main);
           color: var(--primary);
+          border-color: var(--primary-light);
+          transform: translateX(4px);
         }
         .account-nav-link.active {
           background: var(--primary);
           color: #fff;
+          border-color: var(--primary);
+          box-shadow: var(--shadow-sm);
         }
         .account-logout-btn {
-          padding: 10px 12px;
-          border-radius: 6px;
-          font-size: 13.5px;
+          padding: 12px 16px;
+          border-radius: 8px;
+          font-size: 14px;
           font-weight: 600;
-          color: var(--primary);
-          background: transparent;
+          color: #ef4444;
+          background: white;
           text-align: left;
           cursor: pointer;
-          margin-top: 8px;
-          border: none;
-          opacity: 0.8;
+          margin-top: 12px;
+          border: 1px solid #fee2e2;
           transition: var(--transition);
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          width: 100%;
         }
         .account-logout-btn:hover {
-          opacity: 1;
-          background: rgba(239, 68, 68, 0.05);
+          background: #fef2f2;
+          border-color: #fca5a5;
+          transform: translateX(4px);
         }
 
         @media (max-width: 768px) {
@@ -167,26 +180,28 @@ export default function AccountLayout({ children }) {
             gap: 20px;
           }
           .account-sidebar {
-            padding: 12px;
+            padding: 16px;
           }
           .account-nav {
             flex-direction: row;
             overflow-x: auto;
-            padding-bottom: 4px;
-            gap: 8px;
+            padding-bottom: 8px;
+            gap: 10px;
+            scrollbar-width: none;
           }
+          .account-nav::-webkit-scrollbar { display: none; }
           .account-nav-link {
             white-space: nowrap;
-            padding: 8px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
+            padding: 10px 18px;
           }
           .account-logout-btn {
             margin-top: 0;
             white-space: nowrap;
+            width: auto;
+            padding: 10px 18px;
           }
           .account-user-header {
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             padding-bottom: 12px;
           }
         }
