@@ -9,6 +9,7 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID || 'DUMMY_CLIENT_ID',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'DUMMY_CLIENT_SECRET',
       callbackURL: process.env.GOOGLE_CALLBACK_URL || '/api/auth/google/callback',
+      proxy: true // Quan trọng khi chạy sau Nginx của Render
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
