@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
 import { authAPI } from '@/services/api';
 
-export default function LoginCallback() {
+function CallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -46,5 +46,20 @@ export default function LoginCallback() {
         <p>Đang xử lý đăng nhập...</p>
       </div>
     </div>
+  );
+}
+
+export default function LoginCallback() {
+  return (
+    <Suspense fallback={
+      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div className="spinner" style={{ margin: '0 auto', marginBottom: 16 }}></div>
+          <p>Đang tải...</p>
+        </div>
+      </div>
+    }>
+      <CallbackContent />
+    </Suspense>
   );
 }
