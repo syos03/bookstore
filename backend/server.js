@@ -49,11 +49,18 @@ app.use(helmet({
 
 // CORS
 app.use(cors({
-  origin: [
-    process.env.CLIENT_URL || 'http://localhost:3000',
-    process.env.ADMIN_URL || 'http://localhost:3001',
-    'https://bookstore-k2ep42l5r-hancfm-9893s-projects.vercel.app' // Vercel Origin
-  ],
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      process.env.CLIENT_URL || 'http://localhost:3000',
+      process.env.ADMIN_URL || 'http://localhost:3001'
+    ];
+    // Cho phép localhost hoặc bất kỳ domain Vercel/Render nào
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app') || origin.endsWith('.onrender.com')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Chặn bởi CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
