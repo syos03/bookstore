@@ -393,6 +393,63 @@ input, textarea, select { font-family: inherit; }
 .page-btn:hover, .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px var(--primary-glow); }
 .page-btn:disabled { opacity: 0.5; pointer-events: none; }
 
+/* ===================== MOBILE RESPONSIVE OVERRIDES ===================== */
+@media (max-width: 1024px) {
+  .navbar-search { max-width: 400px; }
+}
+
+@media (max-width: 768px) {
+  .navbar-inner { gap: 12px; height: 64px; }
+  .navbar-search { display: none; } /* Mobile search handled separately or hidden */
+  .nav-links { display: none; } /* Switch to hamburger */
+  
+  .hero-banner { padding: 60px 0; text-align: center; }
+  .hero-content { margin: 0 auto; }
+  .hero-desc { margin-left: auto; margin-right: auto; }
+  .hero-actions { justify-content: center; }
+  
+  .section-header { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 24px; }
+  .section-title { font-size: 24px; }
+  
+  .cart-item { flex-direction: column; align-items: flex-start; gap: 16px; position: relative; }
+  .cart-item-image { width: 80px; height: 110px; }
+  
+  .footer-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+  .footer-links, .footer-desc { align-items: center; }
+  .footer-heading::after { content: ''; display: block; width: 40px; height: 2px; background: var(--accent); margin: 8px auto 0; }
+  
+  /* Mobile Menu Styles */
+  .mobile-menu-btn {
+    display: flex !important;
+    width: 40px; height: 40px;
+    align-items: center; justify-content: center;
+    border: 1px solid var(--border-strong); border-radius: var(--radius);
+    background: white; color: var(--text-primary);
+  }
+  
+  .mobile-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 280px;
+    background: var(--bg-card); z-index: 2000;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+    padding: 24px; transform: translateX(100%); transition: var(--transition);
+  }
+  .mobile-drawer.open { transform: translateX(0); }
+  .mobile-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px); z-index: 1999;
+    opacity: 0; visibility: hidden; transition: var(--transition);
+  }
+  .mobile-overlay.open { opacity: 1; visibility: visible; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+  .grid-books { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .book-card .book-title { font-size: 14px; }
+  .book-card .price-current { font-size: 15px; }
+  .hero-title { font-size: 32px; }
+}
+
 /* ANIMATION UTILS */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }

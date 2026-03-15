@@ -62,8 +62,8 @@ export default function HomePage() {
       {/* HERO BANNER */}
       <section className="hero-banner">
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)', gap: 60, alignItems: 'center' }}>
-            <div className="hero-content animate-fade-up">
+          <div className="hero-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: 40, alignItems: 'center' }}>
+            <div className="hero-content animate-fade-up" style={{ textAlign: 'center', maxWidth: '100%' }}>
               <div className="hero-badge" style={{ display: 'inline-flex', alignItems: 'center' }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 8, color: 'var(--accent)'}}><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>
                 Khám phá tri thức thư viện 2026
@@ -196,10 +196,10 @@ export default function HomePage() {
 
         {/* PROMOTION BANNER */}
         <section className="section" style={{ paddingBottom: 0 }}>
-          <div className="glass-panel" style={{
+          <div className="glass-panel promotion-banner" style={{
             background: 'var(--secondary)',
-            padding: '48px', color: 'var(--bg-card)', border: '4px double var(--border-strong)',
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 32,
+            padding: '32px 24px', color: 'var(--bg-card)', border: '4px double var(--border-strong)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 32,
             boxShadow: 'var(--shadow-lg)', borderRadius: '4px'
           }}>
             <div>

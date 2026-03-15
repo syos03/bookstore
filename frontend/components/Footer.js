@@ -20,9 +20,9 @@ export default function Footer() {
               Hệ thống nhà sách trực tuyến với hàng nghìn đầu sách chất lượng.
               Giao hàng toàn quốc. Cam kết giá tốt nhất.
             </p>
-            <div style={{ marginTop: 24, display: 'flex', gap: 16 }}>
+            <div className="footer-social" style={{ marginTop: 24, display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'inherit' }}>
               {['Facebook', 'Instagram', 'Twitter', 'LinkedIn'].map((s) => (
-                <span key={s} style={{ fontSize: 14, opacity: 0.6, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s', '&:hover': {opacity: 1} }}>{s}</span>
+                <span key={s} style={{ fontSize: 14, opacity: 0.6, cursor: 'pointer', fontWeight: 500 }}>{s}</span>
               ))}
             </div>
           </div>

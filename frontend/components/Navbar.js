@@ -11,8 +11,7 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
-  const [user, setUser] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const debounceRef = useRef(null);
 
   const handleSearch = useCallback(async (value) => {
@@ -40,84 +39,88 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="container">
         <div className="navbar-inner">
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="mobile-menu-btn" 
+            style={{ display: 'none' }}
+            onClick={() => setIsMenuOpen(true)}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
           {/* Brand */}
           <Link href="/" className="navbar-brand">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 8, display: 'inline-block', verticalAlign: 'middle'}}><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
             Book<span>Store</span>
           </Link>
 
-          {/* Search */}
+          {/* Desktop Search */}
           <div className="navbar-search">
             <input
               type="text"
-              placeholder="Tìm kiếm tên sách, tác giả..."
+              placeholder="Tìm kiếm sách..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
               onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
               onFocus={() => searchResults.length > 0 && setShowDropdown(true)}
             />
-            <span className="search-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            </span>
-
-            {/* Search Dropdown */}
             {showDropdown && searchResults.length > 0 && (
               <div className="search-dropdown">
                 {searchResults.map((book) => (
-                  <Link
-                    key={book._id}
-                    href={`/books/${book.slug || book._id}`}
-                    className="search-item"
-                    onClick={() => { setShowDropdown(false); setSearchQuery(''); }}
-                  >
-                    <img
-                      src={book.thumbnail || book.coverImage || 'https://placehold.co/40x60?text=S%C3%A1ch'}
-                      alt={book.title}
-                      style={{ width: 40, height: 52, objectFit: 'cover', borderRadius: 4 }}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = 'https://placehold.co/40x60?text=S%C3%A1ch';
-                      }}
-                    />
+                  <Link key={book._id} href={`/books/${book.slug || book._id}`} className="search-item" onClick={() => { setShowDropdown(false); setSearchQuery(''); }}>
+                    <img src={book.thumbnail || book.coverImage || 'https://placehold.co/40x60?text=S%C3%A1ch'} alt={book.title} />
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 2 }}>{book.title}</div>
-                      <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{book.author}</div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary)' }}>
-                        {formatPrice(book.finalPrice || book.price)}
-                      </div>
+                      <div style={{ fontSize: 13, fontWeight: 700 }}>{book.title}</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{book.author}</div>
                     </div>
                   </Link>
                 ))}
-                <Link
-                  href={`/search?q=${searchQuery}`}
-                  className="search-item"
-                  style={{ justifyContent: 'center', color: 'var(--primary)', fontWeight: 600, fontSize: 14 }}
-                  onClick={() => setShowDropdown(false)}
-                >
-                  Xem tất cả kết quả cho "{searchQuery}"
-                </Link>
               </div>
             )}
           </div>
 
-          {/* Nav Links */}
-          <div className="nav-links" style={{ display: 'flex', gap: 4 }}>
+          {/* Desktop Nav Links */}
+          <div className="nav-links">
             <Link href="/books" className="nav-link">Sách</Link>
             <Link href="/books?sort=-soldCount" className="nav-link">Bán Chạy</Link>
-            <Link href="/books?sort=-createdAt" className="nav-link">Mới Nhất</Link>
           </div>
 
           {/* Actions */}
           <div className="navbar-actions">
-            <Link href="/cart" className="navbar-icon-btn" title="Giỏ hàng">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-            </Link>
-            <Link href="/account/wishlist" className="navbar-icon-btn" title="Yêu thích">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-            </Link>
-            <Link href="/account" className="navbar-icon-btn" title="Tài khoản">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="5"></circle><path d="M3 21v-2a7 7 0 0 1 14 0v2"></path></svg>
-            </Link>
+            <Link href="/cart" className="navbar-icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></Link>
+            <Link href="/account" className="navbar-icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="5"></circle><path d="M3 21v-2a7 7 0 0 1 14 0v2"></path></svg></Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu Drawer */}
+      <div className={`mobile-overlay ${isMenuOpen ? 'open' : ''}`} onClick={() => setIsMenuOpen(false)}></div>
+      <div className={`mobile-drawer ${isMenuOpen ? 'open' : ''}`}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
+          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--primary)', fontFamily: 'var(--font-heading)' }}>MENU</div>
+          <button onClick={() => setIsMenuOpen(false)} style={{ background: 'none', color: 'var(--text-muted)' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <Link href="/books" className="nav-link" onClick={() => setIsMenuOpen(false)}>📚 Tất Cả Sách</Link>
+          <Link href="/books?sort=-soldCount" className="nav-link" onClick={() => setIsMenuOpen(false)}>🔥 Bán Chạy</Link>
+          <Link href="/books?sort=-createdAt" className="nav-link" onClick={() => setIsMenuOpen(false)}>✨ Mới Nhất</Link>
+          <div style={{ height: 1, background: 'var(--border)', margin: '8px 0' }}></div>
+          <Link href="/cart" className="nav-link" onClick={() => setIsMenuOpen(false)}>🛒 Giỏ Hàng</Link>
+          <Link href="/account" className="nav-link" onClick={() => setIsMenuOpen(false)}>👤 Tài Khoản</Link>
+        </div>
+        
+        {/* Mobile Search */}
+        <div style={{ marginTop: 32 }}>
+          <div className="navbar-search" style={{ display: 'block', maxWidth: '100%' }}>
+            <input 
+              type="text" 
+              placeholder="Tìm kiếm sách..." 
+              style={{ width: '100%' }}
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+            />
           </div>
         </div>
       </div>
