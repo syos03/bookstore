@@ -199,7 +199,13 @@ const googleCallback = catchAsync(async (req, res) => {
   }
 
   const token = user.generateAuthToken();
-  res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${token}`);
+  const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000'; // Fallback an toàn
+  
+  if (!process.env.CLIENT_URL) {
+    console.error('⚠️ CẢNH BÁO: Biến môi trường CLIENT_URL chưa được cấu hình trên Render!');
+  }
+
+  res.redirect(`${clientUrl}/auth/callback?token=${token}`);
 });
 
 module.exports = {
