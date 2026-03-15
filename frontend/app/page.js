@@ -62,8 +62,8 @@ export default function HomePage() {
       {/* HERO BANNER */}
       <section className="hero-banner">
         <div className="container">
-          <div className="hero-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: 40, alignItems: 'center' }}>
-            <div className="hero-content animate-fade-up" style={{ textAlign: 'center', maxWidth: '100%' }}>
+          <div className="hero-grid">
+            <div className="hero-content animate-fade-up">
               <div className="hero-badge" style={{ display: 'inline-flex', alignItems: 'center' }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 8, color: 'var(--accent)'}}><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>
                 Khám phá tri thức thư viện 2026
@@ -83,23 +83,23 @@ export default function HomePage() {
                   Xem Sách Bán Chạy
                 </Link>
               </div>
-              <div style={{ display: 'flex', gap: 40, marginTop: 48, borderTop: '1px solid var(--border-strong)', paddingTop: 32 }}>
+              <div className="hero-stats">
                 {[
                   { num: '10K+', label: 'Tựa sách hay' },
                   { num: '50K+', label: 'Độc giả tin tưởng' },
                   { num: '4.9/5', label: 'Đánh giá tích cực' },
                 ].map((stat) => (
                   <div key={stat.label}>
-                    <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--secondary)', fontFamily: 'var(--font-heading)' }}>{stat.num}</div>
-                    <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontWeight: 500 }}>{stat.label}</div>
+                    <div className="stat-num">{stat.num}</div>
+                    <div className="stat-label">{stat.label}</div>
                   </div>
                 ))}
               </div>
             </div>
             
             {/* HÌNH ẢNH NỔI BẬT DẠNG DECOR */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20, position: 'relative', zIndex: 1 }}>
-              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '120%', height: '120%', background: 'radial-gradient(circle, var(--border-strong) 0%, transparent 60%)', zIndex: -1, filter: 'blur(40px)', opacity: 0.3 }}></div>
+            <div className="hero-images">
+              <div className="hero-glow"></div>
               {featured.slice(0, 4).map((book, i) => (
                 <Link href={`/books/${book.slug || book._id}`} key={book._id}
                   style={{
@@ -196,15 +196,10 @@ export default function HomePage() {
 
         {/* PROMOTION BANNER */}
         <section className="section" style={{ paddingBottom: 0 }}>
-          <div className="glass-panel promotion-banner" style={{
-            background: 'var(--secondary)',
-            padding: '32px 24px', color: 'var(--bg-card)', border: '4px double var(--border-strong)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 32,
-            boxShadow: 'var(--shadow-lg)', borderRadius: '4px'
-          }}>
+          <div className="glass-panel promotion-banner">
             <div>
               <div style={{ display: 'inline-block', background: 'var(--primary)', color: 'white', padding: '4px 12px', borderRadius: 2, fontSize: 13, fontWeight: 700, fontFamily: 'var(--font-heading)', marginBottom: 16 }}>ĐIỂN TÍCH THƯ QUÁN</div>
-              <h3 style={{ fontSize: 32, fontWeight: 900, marginBottom: 12, fontFamily: 'var(--font-heading)' }}>Thưởng Lãm Sách Quý - Giao Tận Tay</h3>
+              <h3 style={{ fontSize: 'clamp(24px, 5vw, 32px)', fontWeight: 900, marginBottom: 12, fontFamily: 'var(--font-heading)' }}>Thưởng Lãm Sách Quý - Giao Tận Tay</h3>
               <p style={{ opacity: 0.8, fontSize: 16, maxWidth: 500, lineHeight: 1.6 }}>Miễn phí giao hàng toàn quốc cho thư khế từ 300.000đ. Đóng gói cẩn mật, giữ gìn từng trang giấy quý.</p>
             </div>
             <Link href="/books" className="btn btn-lg" style={{ background: 'var(--bg-main)', color: 'var(--primary)', fontWeight: 800, padding: '16px 36px', border: '1px solid var(--border-strong)' }}>

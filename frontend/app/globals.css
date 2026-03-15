@@ -403,16 +403,39 @@ input, textarea, select { font-family: inherit; }
 .responsive-grid { display: grid; gap: 24px; }
 .layout-with-sidebar { display: grid; grid-template-columns: 240px 1fr; gap: 28px; }
 
+/* Hero Section Desktop */
+.hero-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; }
+.hero-stats { display: flex; gap: 40px; margin-top: 48px; border-top: 1px solid var(--border-strong); padding-top: 32px; }
+.stat-num { font-size: 24px; font-weight: 900; color: var(--secondary); font-family: var(--font-heading); }
+.stat-label { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
+.hero-images { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; position: relative; z-index: 1; }
+.hero-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120%; height: 120%; background: radial-gradient(circle, var(--border-strong) 0%, transparent 60%); z-index: -1; filter: blur(40px); opacity: 0.3; }
+
+/* Promotion Banner Desktop */
+.promotion-banner {
+  background: var(--secondary);
+  padding: 48px; color: var(--bg-card); border: 4px double var(--border-strong);
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 32px;
+  box-shadow: var(--shadow-lg); border-radius: 4px;
+}
+
+/* Mobile Menu Hidden on Desktop */
+.mobile-drawer, .mobile-overlay, .mobile-menu-btn { display: none; }
+
 @media (max-width: 768px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+  .hero-stats { justify-content: center; gap: 24px; }
+  .hero-images { max-width: 400px; margin: 0 auto; }
+  
+  .promotion-banner { flex-direction: column; text-align: center; padding: 32px 24px; }
+  
   .layout-with-sidebar { grid-template-columns: 1fr; }
   .navbar-inner { gap: 12px; height: 64px; }
   .navbar-search { display: none; }
   .nav-links { display: none; }
   
-  .hero-banner { padding: 40px 0; text-align: center; }
+  .hero-banner { padding: 40px 0; }
   .hero-content { margin: 0 auto; }
-  .hero-wrapper { flex-direction: column !important; }
-  .hero-actions { justify-content: center; }
   
   .section-header { flex-direction: column; align-items: center; text-align: center; gap: 12px; margin-bottom: 24px; }
   .section-title { font-size: 24px; }
@@ -425,6 +448,29 @@ input, textarea, select { font-family: inherit; }
   
   /* Form Grids */
   .grid-2-col, .grid-3-col { grid-template-columns: 1fr !important; }
+  
+  /* Mobile Menu Styles */
+  .mobile-menu-btn {
+    display: flex !important;
+    width: 40px; height: 40px;
+    align-items: center; justify-content: center;
+    border: 1px solid var(--border-strong); border-radius: var(--radius);
+    background: white; color: var(--text-primary);
+  }
+  
+  .mobile-drawer {
+    display: block; position: fixed; top: 0; right: 0; bottom: 0; width: 280px;
+    background: var(--bg-card); z-index: 2000;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+    padding: 24px; transform: translateX(100%); transition: var(--transition);
+  }
+  .mobile-drawer.open { transform: translateX(0); }
+  .mobile-overlay {
+    display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px); z-index: 1999;
+    opacity: 0; visibility: hidden; transition: var(--transition);
+  }
+  .mobile-overlay.open { opacity: 1; visibility: visible; }
 }
 
 .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
