@@ -53,52 +53,144 @@ export default function AccountLayout({ children }) {
   ];
 
   return (
-    <div className="container" style={{ paddingTop: 32, paddingBottom: 64 }}>
-      <div className="layout-with-sidebar">
+    <div className="container account-container" style={{ paddingTop: 24, paddingBottom: 48 }}>
+      <div className="account-grid">
         
         {/* Sidebar */}
-        <div className="card" style={{ padding: '24px 16px', height: 'fit-content' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '0 8px 24px', borderBottom: '1px solid var(--border)' }}>
+        <div className="card account-sidebar">
+          <div className="account-user-header">
             <img 
-              src={user.avatar || 'https://placehold.co/48x48?text=Avatar'} 
+              src={user.avatar || 'https://placehold.co/40x40?text=U'} 
               alt="" 
-              style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover' }} 
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = 'https://placehold.co/48x48?text=Avatar';
-              }}
+              className="account-avatar"
             />
             <div>
-              <div style={{ fontWeight: 700 }}>{user.name}</div>
-              <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Thành viên</div>
+              <div className="account-user-name">{user.name}</div>
+              <div className="account-user-role">Thành viên</div>
             </div>
           </div>
-          <div style={{ padding: '16px 0 0', display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <div className="account-nav">
             {links.map(link => (
-              <Link key={link.path} href={link.path} style={{
-                padding: '12px 16px', borderRadius: 8, fontSize: 14, fontWeight: 500,
-                background: pathname === link.path ? 'var(--primary)' : 'transparent',
-                color: pathname === link.path ? '#fff' : 'var(--text-secondary)',
-                transition: 'var(--transition)'
-              }}>
+              <Link key={link.path} href={link.path} className={`account-nav-link ${pathname === link.path ? 'active' : ''}`}>
                 {link.label}
               </Link>
             ))}
-            <button onClick={handleLogout} style={{
-              padding: '12px 16px', borderRadius: 8, fontSize: 14, fontWeight: 500,
-              color: 'var(--error)', background: 'transparent', textAlign: 'left', cursor: 'pointer',
-              marginTop: 16, border: 'none'
-            }}>
+            <button onClick={handleLogout} className="account-logout-btn">
               🚪 Đăng xuất
             </button>
           </div>
         </div>
 
         {/* Content */}
-        <div>
+        <div className="account-content">
           {children}
         </div>
       </div>
+
+      <style jsx>{`
+        .account-grid {
+          display: grid;
+          grid-template-columns: 240px 1fr;
+          gap: 24px;
+        }
+        .account-sidebar {
+          padding: 16px 12px;
+          height: fit-content;
+        }
+        .account-user-header {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 0 4px 16px;
+          border-bottom: 1px solid var(--border);
+          margin-bottom: 12px;
+        }
+        .account-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 1px solid var(--border-strong);
+        }
+        .account-user-name {
+          font-weight: 700;
+          font-size: 14.5px;
+          color: var(--text-primary);
+        }
+        .account-user-role {
+          font-size: 12px;
+          color: var(--text-muted);
+        }
+        .account-nav {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+        .account-nav-link {
+          padding: 10px 12px;
+          border-radius: 6px;
+          font-size: 13.5px;
+          font-weight: 600;
+          color: var(--text-secondary);
+          transition: var(--transition);
+        }
+        .account-nav-link:hover {
+          background: var(--bg-main);
+          color: var(--primary);
+        }
+        .account-nav-link.active {
+          background: var(--primary);
+          color: #fff;
+        }
+        .account-logout-btn {
+          padding: 10px 12px;
+          border-radius: 6px;
+          font-size: 13.5px;
+          font-weight: 600;
+          color: var(--primary);
+          background: transparent;
+          text-align: left;
+          cursor: pointer;
+          margin-top: 8px;
+          border: none;
+          opacity: 0.8;
+          transition: var(--transition);
+        }
+        .account-logout-btn:hover {
+          opacity: 1;
+          background: rgba(239, 68, 68, 0.05);
+        }
+
+        @media (max-width: 768px) {
+          .account-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
+          .account-sidebar {
+            padding: 12px;
+          }
+          .account-nav {
+            flex-direction: row;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            gap: 8px;
+          }
+          .account-nav-link {
+            white-space: nowrap;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+          }
+          .account-logout-btn {
+            margin-top: 0;
+            white-space: nowrap;
+          }
+          .account-user-header {
+            margin-bottom: 8px;
+            padding-bottom: 12px;
+          }
+        }
+      `}</style>
     </div>
   );
 }
