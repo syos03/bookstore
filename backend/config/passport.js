@@ -8,10 +8,14 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID || 'DUMMY_CLIENT_ID',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'DUMMY_CLIENT_SECRET',
-      callbackURL: process.env.GOOGLE_CALLBACK_URL || '/api/auth/google/callback',
-      proxy: true // Quan trọng khi chạy sau Nginx của Render
+      // Ép buộc dùng URL tuyệt đối để tránh Google Mismatch khi chạy trên Render
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || 'https://bookstore-yazu.onrender.com/api/auth/google/callback',
+      proxy: true
     },
     async (accessToken, refreshToken, profile, done) => {
+      console.log('--- GOOGLE LOGIN DEBUG ---');
+      console.log('User Email:', profile.emails[0]?.value);
+      console.log('---');
       try {
         logger.info(`Google login attempt for email: ${profile.emails[0]?.value}`);
         // Tìm user theo googleId hoặc email
