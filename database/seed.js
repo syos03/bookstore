@@ -1,0 +1,611 @@
+const path = require('path');
+require(path.resolve(__dirname, '../backend/node_modules/dotenv')).config({ path: path.resolve(__dirname, '../backend/.env') });
+const mongoose = require('mongoose');
+
+// Load models
+const User = require('../backend/models/User');
+const Book = require('../backend/models/Book');
+const Category = require('../backend/models/Category');
+const Cart = require('../backend/models/Cart');
+
+const connectDB = async () => {
+  await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/bookstore');
+  console.log('✅ Đã kết nối MongoDB');
+};
+
+// ==================== CATEGORIES DATA ====================
+const categoriesData = [
+  { name: 'Văn học', description: 'Tiểu thuyết, truyện ngắn, thơ ca', icon: '📖', sortOrder: 1 },
+  { name: 'Kinh tế - Kinh doanh', description: 'Quản trị, marketing, đầu tư', icon: '💼', sortOrder: 2 },
+  { name: 'Công nghệ - IT', description: 'Lập trình, phát triển phần mềm', icon: '💻', sortOrder: 3 },
+  { name: 'Tâm lý - Kỹ năng sống', description: 'Phát triển bản thân, tâm lý học', icon: '🧠', sortOrder: 4 },
+  { name: 'Thiếu nhi', description: 'Sách cho trẻ em và thiếu niên', icon: '🧒', sortOrder: 5 },
+  { name: 'Lịch sử - Địa lý', description: 'Lịch sử thế giới, địa lý, văn hóa', icon: '🗺️', sortOrder: 6 },
+  { name: 'Khoa học - Tự nhiên', description: 'Vật lý, hóa học, sinh học, toán học', icon: '🔬', sortOrder: 7 },
+  { name: 'Ngoại ngữ', description: 'Học tiếng Anh, Nhật, Hàn, Trung...', icon: '🌍', sortOrder: 8 },
+];
+
+// ==================== BOOKS DATA ====================
+const getBooksData = (categories) => {
+  const catMap = {};
+  categories.forEach((c) => (catMap[c.name] = c._id));
+
+  return [
+    // Văn học
+    {
+      title: 'Dế Mèn Phiêu Lưu Ký',
+      author: 'Tô Hoài',
+      publisher: 'NXB Kim Đồng',
+      category: catMap['Văn học'],
+      price: 85000,
+      originalPrice: 100000,
+      discount: 15,
+      stock: 120,
+      description: 'Câu chuyện về chú dế mèn nghịch ngợm trong cuộc hành trình khám phá thế giới đầy thú vị và nguy hiểm. Tác phẩm kinh điển của văn học thiếu nhi Việt Nam.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/45/ca/16/6d7478a32b9b551fc5b9c3a0a790040c.jpg',
+      pages: 320,
+      publishYear: 1941,
+      rating: 4.8,
+      numReviews: 1250,
+      soldCount: 5890,
+      isFeatured: true,
+      tags: ['thiếu nhi', 'cổ điển', 'Việt Nam'],
+    },
+    {
+      title: 'Số Đỏ',
+      author: 'Vũ Trọng Phụng',
+      publisher: 'NXB Văn Học',
+      category: catMap['Văn học'],
+      price: 95000,
+      originalPrice: 110000,
+      discount: 14,
+      stock: 85,
+      description: 'Tiểu thuyết trào phúng xuất sắc của văn học hiện thực Việt Nam. Câu chuyện về Xuân tóc đỏ - kẻ lưu manh may mắn trở thành "anh hùng" trong xã hội thượng lưu thời Pháp thuộc.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/30/66/97/ac7a8498bce4f75b25e2f4adeb24f26a.jpg',
+      pages: 280,
+      publishYear: 1936,
+      rating: 4.7,
+      numReviews: 890,
+      soldCount: 3200,
+      isFeatured: true,
+      tags: ['cổ điển', 'Việt Nam', 'trào phúng'],
+    },
+    {
+      title: 'Nhà Giả Kim',
+      author: 'Paulo Coelho',
+      publisher: 'NXB Hội Nhà Văn',
+      category: catMap['Văn học'],
+      price: 79000,
+      originalPrice: 90000,
+      discount: 12,
+      stock: 200,
+      description: 'Cuốn tiểu thuyết triết học nổi tiếng toàn cầu về hành trình một chàng trai chăn cừu Tây Ban Nha đi tìm kho báu và khám phá ý nghĩa cuộc sống.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/45/6f/f7/0927e343f3b5e3d9223491f7d45e8987.jpg',
+      pages: 228,
+      publishYear: 1988,
+      rating: 4.9,
+      numReviews: 3560,
+      soldCount: 12000,
+      isFeatured: true,
+      tags: ['triết học', 'nước ngoài', 'best-seller'],
+    },
+    {
+      title: 'Mắt Biếc',
+      author: 'Nguyễn Nhật Ánh',
+      publisher: 'NXB Trẻ',
+      category: catMap['Văn học'],
+      price: 88000,
+      originalPrice: 100000,
+      discount: 12,
+      stock: 150,
+      description: 'Câu chuyện tình yêu thơ mộng và đau thương về chàng trai si tình mang cái tên Ngạn và cô gái có đôi mắt xanh biếc tên Hà Lan.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/8c/6f/a1/8c5d9e9d7571e0b4a7cc24f17fa3a1f5.jpg',
+      pages: 296,
+      publishYear: 1990,
+      rating: 4.8,
+      numReviews: 2100,
+      soldCount: 8500,
+      isFeatured: true,
+      tags: ['tình yêu', 'Việt Nam', 'Nguyễn Nhật Ánh'],
+    },
+    {
+      title: 'Cho Tôi Xin Một Vé Đi Tuổi Thơ',
+      author: 'Nguyễn Nhật Ánh',
+      publisher: 'NXB Trẻ',
+      category: catMap['Văn học'],
+      price: 72000,
+      stock: 180,
+      description: 'Câu chuyện về nhóm bạn nhỏ với trò chơi giả vờ làm người lớn, khơi dậy ký ức tuổi thơ trong lành và hồn nhiên của mỗi người.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/8c/6f/a1/8c5d9e9d7571e0b4a7cc24f17fa3a1f5.jpg',
+      pages: 232,
+      publishYear: 2008,
+      rating: 4.7,
+      numReviews: 1800,
+      soldCount: 7200,
+      tags: ['tuổi thơ', 'Nguyễn Nhật Ánh'],
+    },
+
+    // Kinh tế - Kinh doanh
+    {
+      title: 'Nghĩ Giàu Làm Giàu',
+      author: 'Napoleon Hill',
+      publisher: 'NXB Lao Động',
+      category: catMap['Kinh tế - Kinh doanh'],
+      price: 125000,
+      originalPrice: 150000,
+      discount: 17,
+      stock: 100,
+      description: 'Cuốn sách kinh điển về phát triển tư duy thịnh vượng. Napoleon Hill tiết lộ bí quyết thành công của 500 người giàu nhất nước Mỹ.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/de/f7/9f/c6f07dd2073f2e5c5a36a90e9e2cad19.jpg',
+      pages: 350,
+      publishYear: 1937,
+      rating: 4.6,
+      numReviews: 2890,
+      soldCount: 9500,
+      isFeatured: true,
+      tags: ['kinh doanh', 'phát triển bản thân', 'best-seller'],
+    },
+    {
+      title: 'Khởi Nghiệp Tinh Gọn',
+      author: 'Eric Ries',
+      publisher: 'NXB Thế Giới',
+      category: catMap['Kinh tế - Kinh doanh'],
+      price: 145000,
+      originalPrice: 170000,
+      discount: 15,
+      stock: 75,
+      description: 'Phương pháp Lean Startup cách mạng hóa cách các công ty được xây dựng và phát triển sản phẩm mới trên toàn thế giới.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/de/f7/9f/c6f07dd2073f2e5c5a36a90e9e2cad19.jpg',
+      pages: 320,
+      publishYear: 2011,
+      rating: 4.5,
+      numReviews: 1450,
+      soldCount: 4800,
+      tags: ['startup', 'kinh doanh', 'lean'],
+    },
+    {
+      title: 'Đắc Nhân Tâm',
+      author: 'Dale Carnegie',
+      publisher: 'NXB Tổng Hợp TP.HCM',
+      category: catMap['Kinh tế - Kinh doanh'],
+      price: 98000,
+      originalPrice: 115000,
+      discount: 15,
+      stock: 250,
+      description: 'Cuốn sách về nghệ thuật giao tiếp và ảnh hưởng con người đã bán hơn 30 triệu bản trên toàn thế giới. Hướng dẫn cách chinh phục lòng người.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/de/f7/9f/c6f07dd2073f2e5c5a36a90e9e2cad19.jpg',
+      pages: 400,
+      publishYear: 1936,
+      rating: 4.8,
+      numReviews: 5600,
+      soldCount: 18000,
+      isFeatured: true,
+      tags: ['giao tiếp', 'kỹ năng', 'best-seller'],
+    },
+
+    // Công nghệ - IT
+    {
+      title: 'Clean Code',
+      author: 'Robert C. Martin',
+      publisher: 'NXB Thông Tin',
+      category: catMap['Công nghệ - IT'],
+      price: 185000,
+      originalPrice: 220000,
+      discount: 16,
+      stock: 60,
+      description: 'Cẩm nang về viết code sạch, dễ đọc và bảo trì. Bắt buộc phải đọc với mọi lập trình viên muốn nâng cao kỹ năng.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/61/15/2b/1a0e4edc0e6b3ed97a1c59d3fb18d44d.jpg',
+      pages: 464,
+      publishYear: 2008,
+      rating: 4.9,
+      numReviews: 2300,
+      soldCount: 6700,
+      isFeatured: true,
+      tags: ['lập trình', 'clean code', 'software engineering'],
+    },
+    {
+      title: 'Lập Trình Python Cơ Bản',
+      author: 'Al Sweigart',
+      publisher: 'NXB Thông Tin',
+      category: catMap['Công nghệ - IT'],
+      price: 165000,
+      originalPrice: 195000,
+      discount: 15,
+      stock: 90,
+      description: 'Từng bước học Python thông qua các dự án thực tế thú vị. Phù hợp cho người mới bắt đầu học lập trình.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/61/15/2b/1a0e4edc0e6b3ed97a1c59d3fb18d44d.jpg',
+      pages: 506,
+      publishYear: 2019,
+      rating: 4.6,
+      numReviews: 980,
+      soldCount: 3400,
+      tags: ['python', 'lập trình', 'IT'],
+    },
+    {
+      title: 'JavaScript: The Good Parts',
+      author: 'Douglas Crockford',
+      publisher: "O'Reilly",
+      category: catMap['Công nghệ - IT'],
+      price: 175000,
+      stock: 45,
+      description: 'Khám phá những phần tốt nhất của JavaScript - ngôn ngữ lập trình phổ biến nhất thế giới.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/61/15/2b/1a0e4edc0e6b3ed97a1c59d3fb18d44d.jpg',
+      pages: 172,
+      publishYear: 2008,
+      rating: 4.4,
+      numReviews: 560,
+      soldCount: 1800,
+      tags: ['javascript', 'lập trình', 'web'],
+    },
+
+    // Tâm lý - Kỹ năng sống
+    {
+      title: 'Sức Mạnh Của Thói Quen',
+      author: 'Charles Duhigg',
+      publisher: 'NXB Lao Động',
+      category: catMap['Tâm lý - Kỹ năng sống'],
+      price: 115000,
+      originalPrice: 135000,
+      discount: 15,
+      stock: 130,
+      description: 'Khoa học về việc thói quen hoạt động như thế nào và cách thay đổi chúng để thành công hơn trong cuộc sống và sự nghiệp.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/de/f7/9f/c6f07dd2073f2e5c5a36a90e9e2cad19.jpg',
+      pages: 371,
+      publishYear: 2012,
+      rating: 4.7,
+      numReviews: 2100,
+      soldCount: 7800,
+      isFeatured: true,
+      tags: ['thói quen', 'phát triển bản thân', 'tâm lý'],
+    },
+    {
+      title: 'Ikigai - Bí Quyết Sống Trường Thọ',
+      author: 'Héctor García',
+      publisher: 'NXB Dân Trí',
+      category: catMap['Tâm lý - Kỹ năng sống'],
+      price: 98000,
+      originalPrice: 115000,
+      discount: 15,
+      stock: 160,
+      description: 'Triết lý sống của người Nhật về việc tìm kiếm mục đích sống - bí quyết giúp sống thọ và hạnh phúc.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/de/f7/9f/c6f07dd2073f2e5c5a36a90e9e2cad19.jpg',
+      pages: 208,
+      publishYear: 2016,
+      rating: 4.6,
+      numReviews: 3200,
+      soldCount: 11000,
+      isFeatured: true,
+      tags: ['triết lý', 'Nhật Bản', 'sống thọ'],
+    },
+    {
+      title: 'Atomic Habits',
+      author: 'James Clear',
+      publisher: 'NXB Thế Giới',
+      category: catMap['Tâm lý - Kỹ năng sống'],
+      price: 135000,
+      originalPrice: 158000,
+      discount: 15,
+      stock: 200,
+      description: 'Phương pháp 1% cải tiến mỗi ngày để tạo ra thói quen tốt và loại bỏ thói quen xấu một cách hiệu quả.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/de/f7/9f/c6f07dd2073f2e5c5a36a90e9e2cad19.jpg',
+      pages: 320,
+      publishYear: 2018,
+      rating: 4.9,
+      numReviews: 4500,
+      soldCount: 15000,
+      isFeatured: true,
+      tags: ['thói quen', 'phát triển bản thân', 'best-seller'],
+    },
+
+    // Thiếu nhi
+    {
+      title: 'Doraemon - Tập 1',
+      author: 'Fujiko F. Fujio',
+      publisher: 'NXB Kim Đồng',
+      category: catMap['Thiếu nhi'],
+      price: 25000,
+      stock: 500,
+      description: 'Những cuộc phiêu lưu của chú mèo máy đến từ tương lai cùng cậu bé Nobita.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/45/ca/16/6d7478a32b9b551fc5b9c3a0a790040c.jpg',
+      pages: 192,
+      publishYear: 1969,
+      rating: 4.9,
+      numReviews: 8900,
+      soldCount: 45000,
+      isFeatured: true,
+      tags: ['manga', 'thiếu nhi', 'Doraemon'],
+    },
+    {
+      title: 'Harry Potter Và Hòn Đá Phù Thủy',
+      author: 'J.K. Rowling',
+      publisher: 'NXB Trẻ',
+      category: catMap['Thiếu nhi'],
+      price: 145000,
+      originalPrice: 170000,
+      discount: 15,
+      stock: 180,
+      description: 'Tập đầu tiên trong bộ truyện Harry Potter - câu chuyện về cậu bé phù thủy nhỏ tuổi tại trường Hogwarts.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/45/ca/16/6d7478a32b9b551fc5b9c3a0a790040c.jpg',
+      pages: 320,
+      publishYear: 1997,
+      rating: 4.9,
+      numReviews: 6700,
+      soldCount: 28000,
+      isFeatured: true,
+      tags: ['phép thuật', 'thiếu niên', 'Harry Potter'],
+    },
+
+    // Lịch sử - Địa lý
+    {
+      title: 'Sapiens: Lược Sử Loài Người',
+      author: 'Yuval Noah Harari',
+      publisher: 'NXB Thế Giới',
+      category: catMap['Lịch sử - Địa lý'],
+      price: 195000,
+      originalPrice: 230000,
+      discount: 15,
+      stock: 95,
+      description: 'Hành trình 70.000 năm của loài người từ thời nguyên thủy đến thế kỷ 21, giải thích tại sao Homo Sapiens thống trị trái đất.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/de/f7/9f/c6f07dd2073f2e5c5a36a90e9e2cad19.jpg',
+      pages: 500,
+      publishYear: 2011,
+      rating: 4.8,
+      numReviews: 3900,
+      soldCount: 13000,
+      isFeatured: true,
+      tags: ['lịch sử', 'nhân loại', 'best-seller'],
+    },
+    {
+      title: 'Lịch Sử Việt Nam Bằng Tranh - Tập 1',
+      author: 'Trần Bạch Đằng',
+      publisher: 'NXB Trẻ',
+      category: catMap['Lịch sử - Địa lý'],
+      price: 55000,
+      stock: 210,
+      description: 'Lịch sử Việt Nam từ thời dựng nước qua tranh minh họa sinh động, dễ hiểu.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/45/ca/16/6d7478a32b9b551fc5b9c3a0a790040c.jpg',
+      pages: 128,
+      publishYear: 2010,
+      rating: 4.5,
+      numReviews: 1200,
+      soldCount: 5600,
+      tags: ['lịch sử', 'Việt Nam', 'truyện tranh'],
+    },
+
+    // Khoa học - Tự nhiên
+    {
+      title: 'Vũ Trụ Trong Vỏ Hạt Dẻ',
+      author: 'Stephen Hawking',
+      publisher: 'NXB Trẻ',
+      category: catMap['Khoa học - Tự nhiên'],
+      price: 135000,
+      originalPrice: 160000,
+      discount: 16,
+      stock: 70,
+      description: 'Stephen Hawking giải thích vật lý lý thuyết một cách dễ hiểu, từ thuyết tương đối đến cơ học lượng tử.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/61/15/2b/1a0e4edc0e6b3ed97a1c59d3fb18d44d.jpg',
+      pages: 224,
+      publishYear: 2001,
+      rating: 4.7,
+      numReviews: 1600,
+      soldCount: 4200,
+      tags: ['vật lý', 'thiên văn', 'Stephen Hawking'],
+    },
+
+    // Ngoại ngữ
+    {
+      title: 'English Grammar In Use',
+      author: 'Raymond Murphy',
+      publisher: 'Cambridge',
+      category: catMap['Ngoại ngữ'],
+      price: 245000,
+      originalPrice: 285000,
+      discount: 14,
+      stock: 140,
+      description: 'Giáo trình ngữ pháp tiếng Anh nổi tiếng nhất thế giới với hàng trăm bài tập thực hành.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/61/15/2b/1a0e4edc0e6b3ed97a1c59d3fb18d44d.jpg',
+      pages: 380,
+      publishYear: 2019,
+      rating: 4.8,
+      numReviews: 2800,
+      soldCount: 9800,
+      isFeatured: true,
+      tags: ['tiếng Anh', 'ngữ pháp', 'học tập'],
+    },
+    {
+      title: 'Tiếng Nhật Cho Người Mới Bắt Đầu',
+      author: 'Đội ngũ biên soạn',
+      publisher: 'NXB Đại Học Quốc Gia',
+      category: catMap['Ngoại ngữ'],
+      price: 165000,
+      stock: 85,
+      description: 'Học tiếng Nhật từ con số không với phương pháp hiệu quả, kèm CD audio và bài tập.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/61/15/2b/1a0e4edc0e6b3ed97a1c59d3fb18d44d.jpg',
+      pages: 280,
+      publishYear: 2020,
+      rating: 4.4,
+      numReviews: 720,
+      soldCount: 2400,
+      tags: ['tiếng Nhật', 'N5', 'N4'],
+    },
+
+    // More books to reach 30+
+    {
+      title: 'Tôi Tự Học',
+      author: 'Nguyễn Duy Cần',
+      publisher: 'NXB Trẻ',
+      category: catMap['Tâm lý - Kỹ năng sống'],
+      price: 75000,
+      stock: 110,
+      description: 'Phương pháp tự học hiệu quả của học giả nổi tiếng Nguyễn Duy Cần.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/de/f7/9f/c6f07dd2073f2e5c5a36a90e9e2cad19.jpg',
+      pages: 250,
+      publishYear: 1952,
+      rating: 4.6,
+      numReviews: 890,
+      soldCount: 3500,
+      tags: ['tự học', 'giáo dục', 'Việt Nam'],
+    },
+    {
+      title: 'Rich Dad Poor Dad',
+      author: 'Robert Kiyosaki',
+      publisher: 'NXB Lao Động',
+      category: catMap['Kinh tế - Kinh doanh'],
+      price: 105000,
+      originalPrice: 125000,
+      discount: 16,
+      stock: 175,
+      description: 'Sự khác biệt giữa người giàu và người nghèo trong cách suy nghĩ về tiền bạc và đầu tư.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/de/f7/9f/c6f07dd2073f2e5c5a36a90e9e2cad19.jpg',
+      pages: 336,
+      publishYear: 1997,
+      rating: 4.7,
+      numReviews: 4200,
+      soldCount: 14500,
+      isFeatured: true,
+      tags: ['tài chính', 'đầu tư', 'best-seller'],
+    },
+    {
+      title: 'Bố Già',
+      author: 'Mario Puzo',
+      publisher: 'NXB Văn Học',
+      category: catMap['Văn học'],
+      price: 155000,
+      stock: 65,
+      description: 'Kiệt tác văn học thế giới về gia đình mafia Corleone - nền tảng của bộ phim huyền thoại cùng tên.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/8c/6f/a1/8c5d9e9d7571e0b4a7cc24f17fa3a1f5.jpg',
+      pages: 448,
+      publishYear: 1969,
+      rating: 4.8,
+      numReviews: 2100,
+      soldCount: 6300,
+      tags: ['tiểu thuyết', 'best-seller', 'nước ngoài'],
+    },
+    {
+      title: '1984',
+      author: 'George Orwell',
+      publisher: 'NXB Hội Nhà Văn',
+      category: catMap['Văn học'],
+      price: 89000,
+      stock: 95,
+      description: 'Tiểu thuyết dystopia kinh điển về xã hội độc tài toàn trị nơi Anh Cả luôn theo dõi mọi người.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/8c/6f/a1/8c5d9e9d7571e0b4a7cc24f17fa3a1f5.jpg',
+      pages: 328,
+      publishYear: 1949,
+      rating: 4.7,
+      numReviews: 1890,
+      soldCount: 5800,
+      tags: ['dystopia', 'cổ điển', 'nước ngoài'],
+    },
+    {
+      title: 'Design Patterns',
+      author: 'Gang of Four',
+      publisher: 'Addison-Wesley',
+      category: catMap['Công nghệ - IT'],
+      price: 295000,
+      stock: 35,
+      description: 'Cuốn sách thiết kế phần mềm kinh điển với 23 mẫu thiết kế hướng đối tượng.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/61/15/2b/1a0e4edc0e6b3ed97a1c59d3fb18d44d.jpg',
+      pages: 395,
+      publishYear: 1994,
+      rating: 4.6,
+      numReviews: 890,
+      soldCount: 2100,
+      tags: ['lập trình', 'design patterns', 'OOP'],
+    },
+    {
+      title: 'Thinking Fast and Slow',
+      author: 'Daniel Kahneman',
+      publisher: 'NXB Thế Giới',
+      category: catMap['Tâm lý - Kỹ năng sống'],
+      price: 165000,
+      originalPrice: 195000,
+      discount: 15,
+      stock: 80,
+      description: 'Khám phá hai hệ thống tư duy của con người và cách chúng ảnh hưởng đến mọi quyết định trong cuộc sống.',
+      coverImage: 'https://salt.tikicdn.com/cache/280x280/ts/product/de/f7/9f/c6f07dd2073f2e5c5a36a90e9e2cad19.jpg',
+      pages: 499,
+      publishYear: 2011,
+      rating: 4.7,
+      numReviews: 2300,
+      soldCount: 7500,
+      tags: ['tâm lý', 'nhận thức', 'best-seller'],
+    },
+  ];
+};
+
+// ==================== SEED FUNCTION ====================
+const seedDB = async () => {
+  try {
+    console.log('🌱 Bắt đầu seed dữ liệu...');
+
+    // Xóa dữ liệu cũ
+    await Promise.all([
+      User.deleteMany(),
+      Book.deleteMany(),
+      Category.deleteMany(),
+      Cart.deleteMany(),
+    ]);
+    console.log('🗑️ Đã xóa dữ liệu cũ');
+
+    // Tạo Admin user
+    const adminUser = await User.create({
+      name: 'Admin BookStore',
+      email: 'admin@bookstore.com',
+      password: 'Admin@123456',
+      phone: '0901234567',
+      role: 'admin',
+      isEmailVerified: true,
+    });
+    console.log('👤 Đã tạo admin:', adminUser.email);
+
+    // Tạo test customer
+    const customerUser = await User.create({
+      name: 'Nguyễn Văn An',
+      email: 'customer@bookstore.com',
+      password: 'Customer@123',
+      phone: '0912345678',
+      role: 'customer',
+      isEmailVerified: true,
+      addresses: [
+        {
+          label: 'Nhà',
+          fullName: 'Nguyễn Văn An',
+          phone: '0912345678',
+          street: '123 Nguyễn Huệ',
+          ward: 'Phường Bến Nghé',
+          district: 'Quận 1',
+          city: 'TP. Hồ Chí Minh',
+          isDefault: true,
+        },
+      ],
+    });
+    console.log('👤 Đã tạo customer:', customerUser.email);
+
+    // Tạo giỏ hàng cho customer
+    await Cart.create({ user: customerUser._id, items: [] });
+
+    // Tạo categories
+    const categories = await Category.insertMany(categoriesData);
+    console.log(`📂 Đã tạo ${categories.length} danh mục`);
+
+    // Tạo books
+    const booksData = getBooksData(categories);
+    const books = await Book.insertMany(booksData);
+    console.log(`📚 Đã tạo ${books.length} cuốn sách`);
+
+    console.log('\n✅ Seed dữ liệu hoàn thành!');
+    console.log('='.repeat(50));
+    console.log('📊 THÔNG TIN ĐĂNG NHẬP:');
+    console.log('  Admin: admin@bookstore.com / Admin@123456');
+    console.log('  Customer: customer@bookstore.com / Customer@123');
+    console.log('='.repeat(50));
+
+    process.exit(0);
+  } catch (error) {
+    console.error('❌ Lỗi seed:', error);
+    process.exit(1);
+  }
+};
+
+connectDB().then(seedDB);
