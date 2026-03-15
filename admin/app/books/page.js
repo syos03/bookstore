@@ -22,7 +22,7 @@ export default function BooksManagement() {
   const initialForm = {
     title: '', author: '', description: '', price: '', originalPrice: '',
     discount: 0, stock: '', pages: '', publishYear: '', category: '',
-    isFeatured: false, images: []
+    isFeatured: false, images: [], coverImage: ''
   };
   const [form, setForm] = useState(initialForm);
   const [selectedImages, setSelectedImages] = useState([]);
@@ -95,7 +95,8 @@ export default function BooksManagement() {
       setForm({
         ...book,
         category: book.category?._id || '',
-        images: book.images || []
+        images: book.images || [],
+        coverImage: book.coverImage || ''
       });
       setIsEditing(true);
     } else {
@@ -299,6 +300,11 @@ export default function BooksManagement() {
                   <div className="form-group">
                     <label className="form-label">Mô tả</label>
                     <textarea className="form-control" rows="5" value={form.description} onChange={e => setForm({...form, description: e.target.value})}></textarea>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Link ảnh bìa (URL)</label>
+                    <input className="form-control" placeholder="Dán link ảnh tại đây (ưu tiên hơn upload)" value={form.coverImage} onChange={e => setForm({...form, coverImage: e.target.value})} />
                   </div>
                   
                   <div className="form-group">

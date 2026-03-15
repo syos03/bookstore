@@ -204,7 +204,7 @@ const createBook = catchAsync(async (req, res, next) => {
   const allowedFields = [
     'title', 'author', 'publisher', 'category', 'price', 'originalPrice',
     'discount', 'stock', 'description', 'pages', 'publishYear',
-    'bookLanguage', 'isbn', 'weight', 'isFeatured', 'isActive', 'tags'
+    'bookLanguage', 'isbn', 'weight', 'isFeatured', 'isActive', 'tags', 'coverImage'
   ];
   
   const bookData = {};
@@ -236,7 +236,7 @@ const updateBook = catchAsync(async (req, res, next) => {
   const allowedFields = [
     'title', 'author', 'publisher', 'category', 'price', 'originalPrice',
     'discount', 'stock', 'description', 'pages', 'publishYear',
-    'bookLanguage', 'isbn', 'weight', 'isFeatured', 'isActive', 'tags'
+    'bookLanguage', 'isbn', 'weight', 'isFeatured', 'isActive', 'tags', 'coverImage'
   ];
   
   const updates = {};
