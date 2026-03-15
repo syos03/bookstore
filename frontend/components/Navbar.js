@@ -69,7 +69,7 @@ export default function Navbar() {
             </div>
 
             {/* Search */}
-            <div className="navbar-search" style={{ margin: '0 24px' }}>
+            <div className="navbar-search">
               <input
                 type="text"
                 placeholder="Tìm tên sách, tác giả..."
