@@ -241,7 +241,16 @@ export default function CheckoutPage() {
               </div>
               <div className="price-total">
                 <span>Tổng tiền:</span>
-                <span        .checkout-title { font-size: 28px; fontWeight: 800; marginBottom: 32px; letter-spacing: -0.5px; }
+                <span className="grand-total">{formatPrice(cart.subtotal + shippingFee)}</span>
+              </div>
+              <p className="vat-hint">(Đã bao gồm VAT nếu có)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .checkout-title { font-size: 28px; fontWeight: 800; marginBottom: 32px; letter-spacing: -0.5px; }
         
         /* Stepper */
         .steps-wrapper { maxWidth: 800px; margin: 0 auto 48px; }
@@ -325,11 +334,6 @@ export default function CheckoutPage() {
           .steps-wrapper { marginBottom: 24px; }
           .step-label { display: none; }
           .step-connector { left: 50%; }
-        }
-id-2, .form-grid-3 { gridTemplateColumns: 1fr; gap: 12px; }
-          .checkout-actions { flexDirection: column; }
-          .checkout-actions button { width: 100%; }
-          .steps-container { marginHorizontal: -16px; paddingHorizontal: 16px; }
         }
       `}</style>
     </div>
