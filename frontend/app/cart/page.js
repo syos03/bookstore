@@ -58,99 +58,87 @@ export default function CartPage() {
   );
 
   return (
-    <div className="container" style={{ paddingTop: 32, paddingBottom: 48 }}>
+    <div className="container" style={{ paddingTop: 24, paddingBottom: 40 }}>
       <h1 className="cart-title">🛒 Giỏ Hàng</h1>
 
       {!cart || cart.items.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-          <div style={{ fontSize: 64, marginBottom: 16 }}>🛒</div>
-          <h2 style={{ fontSize: 20, marginBottom: 8 }}>Giỏ hàng trống</h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: 24 }}>Hãy thêm sách vào giỏ hàng nhé!</p>
-          <Link href="/books" className="btn btn-primary btn-lg">📚 Tiếp tục mua sắm</Link>
+        <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+          <div style={{ fontSize: 56, marginBottom: 12 }}>🛒</div>
+          <h2 style={{ fontSize: 18, marginBottom: 6 }}>Giỏ hàng trống</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: 20, fontSize: 14 }}>Hãy thêm sách vào giỏ hàng nhé!</p>
+          <Link href="/books" className="btn btn-primary">📚 Tiếp tục mua sắm</Link>
         </div>
       ) : (
         <div className="cart-grid">
           {/* Cart Items */}
-          <div className="cart-left">
-            <div className="card cart-items-card">
-              <div className="cart-header-row">
-                <span style={{ flex: 1 }}>Sản phẩm ({cart.itemCount})</span>
-                <span className="desktop-only" style={{ width: 120, textAlign: 'center' }}>Số lượng</span>
-                <span className="desktop-only" style={{ width: 120, textAlign: 'right' }}>Thành tiền</span>
-                <button onClick={() => cartAPI.clear().then(fetchCart)} className="clear-all-btn">
-                  🗑️ Xóa tất cả
-                </button>
-              </div>
+          <div className="card cart-items-card">
+            <div className="cart-header">
+              <span className="cart-count">{cart.itemCount} sản phẩm</span>
+              <button onClick={() => cartAPI.clear().then(fetchCart)} className="cart-clear-btn">
+                🗑️ Xóa tất cả
+              </button>
+            </div>
 
-              <div className="cart-items-list">
-                {cart.items.map((item) => (
-                  <div key={item._id} className="cart-item">
-                    <img
-                      src={item.book.coverImage || item.book.thumbnail || 'https://placehold.co/80x110?text=Sách'}
-                      alt={item.book.title}
-                      className="cart-item-image"
-                    />
-                    <div className="cart-item-details">
-                      <div className="cart-item-main">
-                        <Link href={`/books/${item.book.slug || item.book._id}`}>
-                          <h4 className="cart-item-title">{item.book.title}</h4>
-                        </Link>
-                        <p className="cart-item-author">bởi {item.book.author}</p>
-                        <button onClick={() => handleRemove(item.book._id)} className="remove-link-btn">
-                          Xóa
-                        </button>
+            <div className="cart-items-list">
+              {cart.items.map((item) => (
+                <div key={item._id} className="cart-item">
+                  <img
+                    src={item.book.thumbnail || 'https://placehold.co/60x80?text=Sách'}
+                    alt={item.book.title}
+                    className="cart-item-img"
+                  />
+                  <div className="cart-item-body">
+                    <Link href={`/books/${item.book.slug || item.book._id}`} className="cart-item-title">
+                      {item.book.title}
+                    </Link>
+                    <div className="cart-item-author">{item.book.author}</div>
+                    <div className="cart-item-footer">
+                      <div className="qty-control">
+                        <button className="qty-btn" onClick={() => handleQuantityChange(item.book._id, item.quantity - 1)} disabled={!!updating || item.quantity <= 1}>−</button>
+                        <span className="qty-num">{item.quantity}</span>
+                        <button className="qty-btn" onClick={() => handleQuantityChange(item.book._id, item.quantity + 1)} disabled={!!updating || item.quantity >= item.book.stock}>+</button>
                       </div>
-
-                      <div className="cart-item-qty">
-                        <div className="qty-picker">
-                          <button onClick={() => handleQuantityChange(item.book._id, item.quantity - 1)} disabled={!!updating}>−</button>
-                          <span>{item.quantity}</span>
-                          <button onClick={() => handleQuantityChange(item.book._id, item.quantity + 1)} disabled={!!updating || item.quantity >= item.book.stock}>+</button>
-                        </div>
-                      </div>
-
-                      <div className="cart-item-total-price">
-                        {formatPrice(item.itemTotal)}
+                      <div className="cart-item-right">
+                        <span className="cart-item-price">{formatPrice(item.itemTotal)}</span>
+                        <button onClick={() => handleRemove(item.book._id)} className="remove-btn" title="Xóa">✕</button>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Order Summary */}
-          <div className="cart-right">
+          <div className="cart-sidebar">
             <div className="card summary-card">
               <h3 className="summary-title">Tóm tắt đơn hàng</h3>
               <div className="summary-rows">
                 <div className="summary-row">
                   <span>Tạm tính</span>
-                  <span>{formatPrice(cart.subtotal)}</span>
+                  <span className="summary-val">{formatPrice(cart.subtotal)}</span>
                 </div>
                 <div className="summary-row">
-                  <span>Phí vận chuyển</span>
-                  <span style={{ color: shippingFee === 0 ? 'var(--success)' : 'inherit' }}>
-                    {shippingFee === 0 ? 'Miễn phí' : formatPrice(shippingFee)}
+                  <span>Phí giao hàng</span>
+                  <span className={`summary-val ${shippingFee === 0 ? 'free' : ''}`}>
+                    {shippingFee === 0 ? 'MIỄN PHÍ' : formatPrice(shippingFee)}
                   </span>
                 </div>
-                {shippingFee > 0 && (
-                  <div className="shipping-hint">
-                    Mua thêm <b>{formatPrice(300000 - cart.subtotal)}</b> để được miễn phí vận chuyển!
-                  </div>
-                )}
               </div>
-              
+              {shippingFee > 0 && (
+                <div className="free-ship-hint">
+                  💡 Mua thêm <b>{formatPrice(300000 - cart.subtotal)}</b> để miễn phí vận chuyển
+                </div>
+              )}
               <div className="summary-total">
                 <span>Tổng cộng</span>
-                <span className="total-amount">{formatPrice(cart.subtotal + shippingFee)}</span>
+                <span className="total-price">{formatPrice(cart.subtotal + shippingFee)}</span>
               </div>
-              
-              <Link href="/checkout" className="btn btn-primary btn-full btn-lg checkout-btn">
-                MUA HÀNG NGAY
+              <Link href="/checkout" className="btn btn-primary btn-full checkout-go-btn">
+                Tiến hành thanh toán →
               </Link>
-              <Link href="/books" className="btn btn-ghost btn-full" style={{ marginTop: 12 }}>
-                ← Tiếp tục chọn thêm sách
+              <Link href="/books" className="btn btn-ghost btn-full" style={{ marginTop: 8, fontSize: 13 }}>
+                ← Tiếp tục mua sắm
               </Link>
             </div>
           </div>
@@ -158,63 +146,60 @@ export default function CartPage() {
       )}
 
       <style jsx>{`
-        .cart-title { font-size: 28px; fontWeight: 800; marginBottom: 32px; letter-spacing: -0.5px; }
-        .cart-grid { display: grid; gridTemplateColumns: 1fr 380px; gap: 32px; alignItems: start; }
+        .cart-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
+        .cart-grid { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
         
+        /* Items card */
         .cart-items-card { padding: 0; overflow: hidden; }
-        .cart-header-row { display: flex; padding: 16px 24px; background: #fdfdfd; borderBottom: 1px solid var(--border-light); fontSize: 13px; fontWeight: 700; color: var(--text-muted); textTransform: uppercase; letter-spacing: 0.5px; }
-        
-        .cart-item { display: flex; padding: 24px; borderBottom: 1px solid var(--border-light); gap: 24px; }
-        .cart-item:last-child { borderBottom: none; }
-        .cart-item-image { width: 100px; height: 140px; objectFit: cover; borderRadius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        
-        .cart-item-details { flex: 1; display: flex; gap: 24px; alignItems: center; }
-        .cart-item-main { flex: 1; }
-        .cart-item-title { fontSize: 18px; fontWeight: 700; color: var(--text-main); marginBottom: 4px; lineHeight: 1.4; transition: color 0.2s; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+        .cart-count { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .cart-clear-btn { font-size: 12px; color: var(--error, #e74c3c); background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+        .cart-clear-btn:hover { background: rgba(231,76,60,0.08); }
+
+        /* Item row */
+        .cart-items-list { padding: 0 18px; }
+        .cart-item { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border-light, #f0f0f0); }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item-img { width: 60px; height: 80px; object-fit: cover; border-radius: 6px; flex-shrink: 0; border: 1px solid var(--border); }
+        .cart-item-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+        .cart-item-title { font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .cart-item-title:hover { color: var(--primary); }
-        .cart-item-author { fontSize: 13px; color: var(--text-muted); marginBottom: 12px; }
-        
-        .qty-picker { display: flex; alignItems: center; border: 1px solid var(--border); borderRadius: 6px; overflow: hidden; width: fit-content; margin: 0 auto; }
-        .qty-picker button { width: 32px; height: 32px; background: #fff; border: none; fontSize: 18px; cursor: pointer; transition: background 0.2s; }
-        .qty-picker button:hover:not(:disabled) { background: #f5f5f5; }
-        .qty-picker span { width: 40px; textAlign: center; fontSize: 14px; fontWeight: 600; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
-        
-        .cart-item-total-price { width: 120px; textAlign: right; fontSize: 18px; fontWeight: 800; color: var(--primary); }
-        
-        .remove-link-btn { background: none; border: none; padding: 0; color: var(--error); fontSize: 12px; fontWeight: 600; cursor: pointer; opacity: 0.7; transition: opacity 0.2s; }
-        .remove-link-btn:hover { opacity: 1; text-decoration: underline; }
-        .clear-all-btn { background: none; border: none; color: var(--text-muted); fontSize: 12px; fontWeight: 600; cursor: pointer; padding: 0; }
-        .clear-all-btn:hover { color: var(--error); }
+        .cart-item-author { font-size: 12px; color: var(--text-muted); }
+        .cart-item-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 6px; flex-wrap: wrap; gap: 8px; }
 
-        .summary-card { padding: 32px; position: sticky; top: 100px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .summary-title { fontSize: 20px; fontWeight: 800; marginBottom: 24px; borderBottom: 2px solid var(--primary); paddingBottom: 12px; display: inline-block; }
-        .summary-rows { display: flex; flexDirection: column; gap: 16px; marginBottom: 24px; }
-        .summary-row { display: flex; justifyContent: space-between; fontSize: 15px; }
-        .summary-row span:first-child { color: var(--text-secondary); }
-        .summary-row span:last-child { fontWeight: 700; }
-        .shipping-hint { fontSize: 12px; background: #f0f7ff; color: #0070f3; padding: 12px; borderRadius: 8px; lineHeight: 1.5; }
-        
-        .summary-total { borderTop: 1px dashed var(--border); paddingTop: 20px; marginBottom: 24px; display: flex; justifyContent: space-between; alignItems: center; }
-        .summary-total span:first-child { fontSize: 16px; fontWeight: 700; }
-        .total-amount { fontSize: 24px; fontWeight: 900; color: var(--primary); }
-        .checkout-btn { letter-spacing: 1px; }
+        /* Qty control */
+        .qty-control { display: flex; align-items: center; gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+        .qty-btn { width: 28px; height: 28px; background: var(--bg, #f8f9fa); border: none; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text-main); transition: background 0.15s; display: flex; align-items: center; justify-content: center; }
+        .qty-btn:hover:not(:disabled) { background: var(--border); }
+        .qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .qty-num { min-width: 30px; text-align: center; font-size: 13px; font-weight: 600; }
 
-        .desktop-only { display: block; }
+        .cart-item-right { display: flex; align-items: center; gap: 10px; }
+        .cart-item-price { font-size: 14px; font-weight: 700; color: var(--primary); }
+        .remove-btn { width: 24px; height: 24px; background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+        .remove-btn:hover { background: rgba(231,76,60,0.1); color: var(--error, #e74c3c); }
+
+        /* Summary */
+        .cart-sidebar { position: sticky; top: 80px; }
+        .summary-card { padding: 18px; }
+        .summary-title { font-size: 14px; font-weight: 700; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+        .summary-rows { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+        .summary-row { display: flex; justify-content: space-between; font-size: 13px; }
+        .summary-val { font-weight: 600; }
+        .summary-val.free { color: var(--success, #27ae60); }
+        .free-ship-hint { background: var(--bg, #f8f9fa); border-radius: 8px; padding: 8px 10px; font-size: 11.5px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+        .summary-total { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-top: 2px solid var(--border); margin-bottom: 14px; font-size: 13px; font-weight: 600; }
+        .total-price { font-size: 18px; font-weight: 900; color: var(--primary); }
+        .checkout-go-btn { font-size: 14px; padding: 11px; }
 
         @media (max-width: 991px) {
-          .cart-grid { gridTemplateColumns: 1fr; gap: 24px; }
-          .summary-card { position: static; }
-          .desktop-only { display: none; }
-          .cart-item-details { flexDirection: column; alignItems: flex-start; gap: 12px; }
-          .cart-item-total-price { textAlign: left; width: auto; }
-          .qty-picker { margin: 0; }
+          .cart-grid { grid-template-columns: 1fr; }
+          .cart-sidebar { position: static; }
         }
-
         @media (max-width: 640px) {
-          .cart-title { fontSize: 22px; }
-          .cart-item { padding: 16px; gap: 16px; }
-          .cart-item-image { width: 80px; height: 110px; }
-          .cart-item-title { fontSize: 15px; }
+          .cart-item-img { width: 50px; height: 66px; }
+          .cart-item-title { font-size: 12px; }
+          .cart-item-footer { gap: 6px; }
         }
       `}</style>
     </div>
