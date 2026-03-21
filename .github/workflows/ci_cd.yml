@@ -43,11 +43,12 @@ jobs:
         npm run build
 
     # Backend
-    - name: Backend - Install & Lint
+    - name: Backend - Install, Lint & Test
       working-directory: ./backend
       run: |
         npm install
         npm run lint
+        npm run test
 
   deploy:
     needs: lint-and-build
