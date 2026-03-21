@@ -61,32 +61,32 @@ export default function ReviewsManagement() {
                   <tr><td colSpan="6" style={{ textAlign: 'center', padding: 32 }}>Chưa có đánh giá nào</td></tr>
                 ) : (
                   reviewsList.map(item => (
-                    <tr key={item.review._id}>
+                    <tr key={item._id}>
                       <td style={{ maxWidth: 200 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          <img src={item.book.thumbnail || 'https://placehold.co/40x50?text=Sách'} alt="" style={{ width: 40, height: 50, objectFit: 'cover', borderRadius: 4 }} />
+                          <img src={item.book.coverImage || 'https://placehold.co/40x50?text=S%C3%A1ch'} alt="" style={{ width: 40, height: 50, objectFit: 'cover', borderRadius: 4 }} />
                           <div style={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {item.book.title}
                           </div>
                         </div>
                       </td>
                       <td>
-                        <div style={{ fontWeight: 600 }}>{item.review.user?.name || 'Ẩn danh'}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{item.review.user?.email || ''}</div>
+                        <div style={{ fontWeight: 600 }}>{item.user?.name || 'Ẩn danh'}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{item.user?.email || ''}</div>
                       </td>
                       <td>
                         <span style={{ color: '#f39c12', fontSize: 14 }}>
-                          {'★'.repeat(item.review.rating)}{'☆'.repeat(5 - item.review.rating)}
+                          {'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}
                         </span>
                       </td>
                       <td style={{ maxWidth: 300 }}>
                         <div style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                          {item.review.comment}
+                          {item.comment}
                         </div>
                       </td>
-                      <td>{new Date(item.review.createdAt).toLocaleDateString('vi-VN')}</td>
+                      <td>{new Date(item.createdAt).toLocaleDateString('vi-VN')}</td>
                       <td>
-                         <button className="btn btn-danger btn-sm" onClick={() => handleDelete(item.book._id, item.review._id)}>Xóa</button>
+                         <button className="btn btn-danger btn-sm" onClick={() => handleDelete(item.book._id, item._id)}>Xóa</button>
                       </td>
                     </tr>
                   ))

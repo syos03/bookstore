@@ -122,18 +122,18 @@ export default function DashboardOverview() {
         <div className="card" style={{ padding: 24 }}>
           <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20 }}>🔥 Sách bán chạy</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {stats?.topSellingBooks?.map((book, idx) => (
+            {stats?.bestSellingBooks?.map((book, idx) => (
               <div key={book._id} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{ width: 28, height: 28, borderRadius: '50%', background: idx < 3 ? 'var(--warning)' : 'var(--border-color)', color: idx < 3 ? '#fff' : 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>
                   {idx + 1}
                 </div>
                 <img 
-                  src={book.thumbnail || 'https://placehold.co/40x50?text=Sách'} 
+                  src={book.coverImage || book.images?.[0]?.url || 'https://placehold.co/40x50?text=S%C3%A1ch'} 
                   alt="" 
                   style={{ width: 40, height: 50, objectFit: 'cover', borderRadius: 4 }} 
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = 'https://placehold.co/40x50?text=Sách';
+                    e.target.src = 'https://placehold.co/40x50?text=S%C3%A1ch';
                   }}
                 />
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -142,7 +142,7 @@ export default function DashboardOverview() {
                 </div>
               </div>
             ))}
-            {(!stats?.topSellingBooks || stats.topSellingBooks.length === 0) && (
+            {(!stats?.bestSellingBooks || stats.bestSellingBooks.length === 0) && (
                <div style={{ color: 'var(--text-muted)', textAlign: 'center', py: 20 }}>Chưa có dữ liệu</div>
             )}
           </div>

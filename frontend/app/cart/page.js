@@ -59,7 +59,7 @@ export default function CartPage() {
 
   return (
     <div className="container" style={{ paddingTop: 32, paddingBottom: 48 }}>
-      <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 28 }}>🛒 Giỏ Hàng</h1>
+      <h1 className="cart-title">🛒 Giỏ Hàng</h1>
 
       {!cart || cart.items.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '80px 20px' }}>
@@ -69,9 +69,9 @@ export default function CartPage() {
           <Link href="/books" className="btn btn-primary btn-lg">📚 Tiếp tục mua sắm</Link>
         </div>
       ) : (
-        <div className="layout-with-sidebar" style={{ gridTemplateColumns: '1fr 360px' }}>
+        <div className="cart-grid">
           {/* Cart Items */}
-          <div className="card" style={{ padding: '20px 24px' }}>
+          <div className="card cart-items-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <span style={{ fontSize: 15, fontWeight: 600 }}>{cart.itemCount} sản phẩm</span>
               <button onClick={() => cartAPI.clear().then(fetchCart)} style={{ fontSize: 13, color: 'var(--error)', background: 'none', border: 'none', cursor: 'pointer' }}>
@@ -86,20 +86,20 @@ export default function CartPage() {
                   alt={item.book.title}
                   className="cart-item-image"
                 />
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="cart-item-info">
                   <Link href={`/books/${item.book.slug || item.book._id}`}>
-                    <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4, lineHeight: 1.4 }}>{item.book.title}</div>
+                    <div className="cart-item-title">{item.book.title}</div>
                   </Link>
-                  <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12 }}>{item.book.author}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+                  <div className="cart-item-author">{item.book.author}</div>
+                  <div className="cart-item-actions">
                     <div className="cart-qty-control">
                       <button className="cart-qty-btn" onClick={() => handleQuantityChange(item.book._id, item.quantity - 1)} disabled={!!updating}>−</button>
                       <span className="cart-qty-num">{item.quantity}</span>
                       <button className="cart-qty-btn" onClick={() => handleQuantityChange(item.book._id, item.quantity + 1)} disabled={!!updating || item.quantity >= item.book.stock}>+</button>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <span style={{ fontWeight: 700, color: 'var(--primary)', fontSize: 16 }}>{formatPrice(item.itemTotal)}</span>
-                      <button onClick={() => handleRemove(item.book._id)} style={{ color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}>✕</button>
+                    <div className="cart-item-price-remove">
+                      <span className="cart-item-price">{formatPrice(item.itemTotal)}</span>
+                      <button onClick={() => handleRemove(item.book._id)} className="cart-remove-btn">✕</button>
                     </div>
                   </div>
                 </div>
@@ -108,8 +108,8 @@ export default function CartPage() {
           </div>
 
           {/* Order Summary */}
-          <div>
-            <div className="card" style={{ padding: 24, position: 'sticky', top: 80 }}>
+          <div className="cart-summary-wrapper">
+            <div className="card cart-summary-card">
               <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 20 }}>Tóm tắt đơn hàng</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
@@ -144,6 +144,37 @@ export default function CartPage() {
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        .cart-title { font-size: 24px; fontWeight: 800; marginBottom: 28px; }
+        .cart-grid { display: grid; gridTemplateColumns: 1fr 360px; gap: 28px; }
+        .cart-items-card { padding: 20px 24px; }
+        .cart-item-info { flex: 1; minWidth: 0; }
+        .cart-item-title { fontWeight: 600; fontSize: 15px; marginBottom: 4px; lineHeight: 1.4; color: var(--text-main); }
+        .cart-item-author { fontSize: 13px; color: var(--text-muted); marginBottom: 12px; }
+        .cart-item-actions { display: flex; alignItems: center; justifyContent: space-between; flexWrap: wrap; gap: 8px; }
+        .cart-item-price-remove { display: flex; alignItems: center; gap: 12px; }
+        .cart-item-price { fontWeight: 700; color: var(--primary); fontSize: 16px; }
+        .cart-remove-btn { color: var(--text-muted); background: none; border: none; cursor: pointer; fontSize: 18px; padding: 4px; transition: var(--transition); }
+        .cart-remove-btn:hover { color: var(--error); transform: scale(1.1); }
+        .cart-summary-card { padding: 24px; position: sticky; top: 80px; }
+
+        @media (max-width: 991px) {
+          .cart-grid { gridTemplateColumns: 1fr; gap: 24px; }
+          .cart-summary-card { position: static; }
+        }
+
+        @media (max-width: 640px) {
+          .container { paddingLeft: 16px; paddingRight: 16px; }
+          .cart-title { fontSize: 20px; marginBottom: 20px; }
+          .cart-items-card { padding: 16px; }
+          .cart-item { gap: 12px; }
+          .cart-item-image { width: 64px; height: 84px; }
+          .cart-item-title { fontSize: 14px; }
+          .cart-item-actions { flexDirection: column; alignItems: flex-start; gap: 12px; }
+          .cart-item-price-remove { width: 100%; justifyContent: space-between; }
+        }
+      `}</style>
     </div>
   );
 }

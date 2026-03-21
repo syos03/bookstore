@@ -15,7 +15,7 @@ export default function UsersManagement() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await adminAPI.getUsers({ page, limit: 10, search });
+      const res = await adminAPI.getUsers({ page, limit: 10, q: search });
       setUsers(res.data.users);
       setTotalPages(res.totalPages);
     } catch (err) {

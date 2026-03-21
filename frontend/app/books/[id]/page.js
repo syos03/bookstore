@@ -88,15 +88,15 @@ export default function BookDetailPage({ params }) {
   return (
     <div className="container" style={{ paddingTop: 32, paddingBottom: 48 }}>
       {/* BOOK DETAIL */}
-      <div className="layout-with-sidebar" style={{ gap: 48, marginBottom: 48 }}>
+      <div className="book-detail-grid">
         {/* Images */}
-        <div>
-          <div>
-            <div style={{ aspectRatio: '3/4', background: 'var(--border-light)', borderRadius: 16, overflow: 'hidden', marginBottom: 16 }}>
+        <div className="book-images-side">
+          <div className="sticky-image-container">
+            <div className="main-image-wrapper">
               <img 
                 src={selectedImage || 'https://placehold.co/400x560?text=No+Image'} 
                 alt={book.title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                className="main-book-img"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = `https://placehold.co/400x560?text=${encodeURIComponent(book.title || 'Sách')}`;
@@ -104,14 +104,14 @@ export default function BookDetailPage({ params }) {
               />
             </div>
             {book.images?.length > 1 && (
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+              <div className="thumb-grid">
                 {book.images.map((img, i) => (
                   <div key={i} onClick={() => setSelectedImage(img.url)}
-                    style={{ width: 64, height: 80, border: `2px solid ${selectedImage === img.url ? 'var(--primary)' : 'var(--border)'}`, borderRadius: 8, overflow: 'hidden', cursor: 'pointer' }}>
+                    className={`thumb-item ${selectedImage === img.url ? 'active' : ''}`}>
                     <img 
                       src={img.url} 
                       alt="" 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      className="thumb-img"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = `https://placehold.co/64x80?text=${i+1}`;
@@ -125,59 +125,59 @@ export default function BookDetailPage({ params }) {
         </div>
 
         {/* Info */}
-        <div style={{ textAlign: 'inherit' }}>
+        <div className="book-info-side">
           <div className="badge badge-primary" style={{ marginBottom: 12 }}>
             {book.category?.name}
           </div>
-          <h1 style={{ fontSize: 'clamp(20px, 5vw, 26px)', fontWeight: 800, lineHeight: 1.3, marginBottom: 8 }}>{book.title}</h1>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: 16 }}>
+          <h1 className="book-title">{book.title}</h1>
+          <p className="book-author-publisher">
             Tác giả: <strong>{book.author}</strong>
             {book.publisher && <> | NXB: <strong>{book.publisher}</strong></>}
           </p>
 
           {/* Rating */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+          <div className="book-rating-row">
             <span className="stars">{'★'.repeat(Math.round(book.rating))}{'☆'.repeat(5 - Math.round(book.rating))}</span>
             <span style={{ fontWeight: 700 }}>{book.rating}</span>
-            <span style={{ color: 'var(--text-muted)', fontSize: 14 }}>({book.numReviews} đánh giá)</span>
-            <span style={{ color: 'var(--text-muted)', fontSize: 14 }}>Đã bán: {book.soldCount?.toLocaleString()}</span>
+            <span className="rating-count">({book.numReviews} đánh giá)</span>
+            <span className="sold-count">Đã bán: {book.soldCount?.toLocaleString()}</span>
           </div>
 
           {/* Price */}
-          <div style={{ background: 'var(--bg)', borderRadius: 12, padding: 20, marginBottom: 24 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 8, flexWrap: 'wrap' }}>
-              <span style={{ fontSize: 'clamp(24px, 6vw, 32px)', fontWeight: 900, color: 'var(--primary)' }}>{formatPrice(finalPrice)}</span>
+          <div className="price-box">
+            <div className="price-row">
+              <span className="final-price">{formatPrice(finalPrice)}</span>
               {book.discount > 0 && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 18, color: 'var(--text-muted)', textDecoration: 'line-through' }}>{formatPrice(book.price)}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span className="old-price">{formatPrice(book.price)}</span>
                   <span className="badge badge-primary">-{book.discount}%</span>
                 </div>
               )}
             </div>
-            <p style={{ fontSize: 13, color: 'var(--success)', fontWeight: 600 }}>
+            <p className={`stock-status ${book.stock > 0 ? 'in-stock' : 'out-of-stock'}`}>
               {book.stock > 0 ? `✓ Còn ${book.stock} cuốn trong kho` : '✗ Hết hàng'}
             </p>
           </div>
 
-          {/* Book Meta */}
-          <div className="grid-2-col" style={{ marginBottom: 24, fontSize: 14 }}>
+          {/* Book Meta Grid */}
+          <div className="meta-grid">
             {[
               { label: 'Số trang', value: book.pages ? `${book.pages} trang` : '-' },
               { label: 'Năm XB', value: book.publishYear || '-' },
-              { label: 'Ngôn ngữ', value: book.language || 'Tiếng Việt' },
+              { label: 'Ngôn ngữ', value: book.bookLanguage || 'Tiếng Việt' },
               { label: 'Thể loại', value: book.category?.name || '-' },
             ].map(item => (
-              <div key={item.label} style={{ background: 'var(--bg)', padding: '8px 12px', borderRadius: 8 }}>
-                <span style={{ color: 'var(--text-muted)' }}>{item.label}: </span>
-                <strong>{item.value}</strong>
+              <div key={item.label} className="meta-item">
+                <span className="meta-label">{item.label}: </span>
+                <strong className="meta-value">{item.value}</strong>
               </div>
             ))}
           </div>
 
           {/* Quantity & Actions */}
           {book.stock > 0 && (
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+            <div className="book-actions-section">
+              <div className="qty-row">
                 <span style={{ fontSize: 14, fontWeight: 600 }}>Số lượng:</span>
                 <div className="cart-qty-control">
                   <button className="cart-qty-btn" onClick={() => setQuantity(q => Math.max(1, q - 1))}>−</button>
@@ -185,11 +185,11 @@ export default function BookDetailPage({ params }) {
                   <button className="cart-qty-btn" onClick={() => setQuantity(q => Math.min(book.stock, q + 1))}>+</button>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: 12 }}>
-                <button className="btn btn-primary btn-lg" onClick={handleAddToCart} style={{ flex: 1 }}>
+              <div className="action-btns">
+                <button className="btn btn-primary btn-lg add-to-cart-btn" onClick={handleAddToCart}>
                   🛒 Thêm vào giỏ hàng
                 </button>
-                <button className="btn btn-outline" style={{ padding: '14px 20px' }} onClick={handleWishlist} title="Thêm vào yêu thích">
+                <button className="btn btn-outline wishlist-btn" onClick={handleWishlist} title="Thêm vào yêu thích">
                   ❤️
                 </button>
               </div>
@@ -197,18 +197,72 @@ export default function BookDetailPage({ params }) {
           )}
 
           {/* Info Box */}
-          <div style={{ border: '1px solid var(--border)', borderRadius: 12, padding: 16, fontSize: 13, color: 'var(--text-secondary)' }}>
+          <div className="info-box-features">
             {[
               { icon: '🚚', text: 'Miễn phí giao hàng cho đơn từ 300.000đ' },
               { icon: '🔄', text: 'Đổi trả trong 30 ngày nếu sách lỗi' },
               { icon: '✅', text: 'Cam kết sách chính hãng 100%' },
             ].map((item) => (
-              <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', borderBottom: '1px solid var(--border-light)' }}>
-                <span>{item.icon}</span> {item.text}
+              <div key={item.text} className="info-feature-item">
+                <span className="feature-icon">{item.icon}</span> {item.text}
               </div>
             ))}
           </div>
         </div>
+
+        <style jsx>{`
+          .book-detail-grid { display: grid; gridTemplateColumns: 1fr 1.5fr; gap: 48px; marginBottom: 48px; }
+          .sticky-image-container { position: sticky; top: 80px; }
+          .main-image-wrapper { aspectRatio: 3/4; background: var(--border-light); borderRadius: 16px; overflow: hidden; marginBottom: 16px; box-shadow: var(--shadow); }
+          .main-book-img { width: 100%; height: 100%; objectFit: cover; }
+          .thumb-grid { display: flex; gap: 8px; flexWrap: wrap; }
+          .thumb-item { width: 64px; height: 80px; border: 2px solid var(--border); borderRadius: 8px; overflow: hidden; cursor: pointer; transition: var(--transition); }
+          .thumb-item.active { border-color: var(--primary); }
+          .thumb-img { width: 100%; height: 100%; objectFit: cover; }
+          
+          .book-title { fontSize: 26px; fontWeight: 800; lineHeight: 1.3; marginBottom: 8px; }
+          .book-author-publisher { color: var(--text-secondary); marginBottom: 16px; }
+          .book-rating-row { display: flex; alignItems: center; gap: 12px; marginBottom: 20px; flexWrap: wrap; }
+          .rating-count, .sold-count { color: var(--text-muted); fontSize: 14px; }
+          
+          .price-box { background: var(--bg); borderRadius: 12px; padding: 20px; marginBottom: 24px; border: 1px solid var(--border-light); }
+          .price-row { display: flex; alignItems: center; gap: 16px; marginBottom: 8px; flexWrap: wrap; }
+          .final-price { fontSize: 32px; fontWeight: 900; color: var(--primary); }
+          .old-price { fontSize: 18px; color: var(--text-muted); textDecoration: line-through; }
+          .stock-status { fontSize: 13px; fontWeight: 600; }
+          .stock-status.in-stock { color: var(--success); }
+          .stock-status.out-of-stock { color: var(--error); }
+          
+          .meta-grid { display: grid; gridTemplateColumns: 1fr 1fr; gap: 8px; marginBottom: 24px; fontSize: 14px; }
+          .meta-item { background: var(--bg); padding: 8px 12px; borderRadius: 8px; border: 1px solid var(--border-light); }
+          .meta-label { color: var(--text-muted); }
+          
+          .book-actions-section { marginBottom: 24px; }
+          .qty-row { display: flex; alignItems: center; gap: 12px; marginBottom: 16px; }
+          .action-btns { display: flex; gap: 12px; }
+          .add-to-cart-btn { flex: 1; }
+          
+          .info-box-features { border: 1px solid var(--border); borderRadius: 12px; padding: 16px; fontSize: 13px; color: var(--text-secondary); }
+          .info-feature-item { display: flex; alignItems: center; gap: 10px; padding: 6px 0; borderBottom: 1px solid var(--border-light); }
+          .info-feature-item:last-child { borderBottom: none; }
+
+          @media (max-width: 991px) {
+            .book-detail-grid { gridTemplateColumns: 1fr; gap: 32px; }
+            .sticky-image-container { position: static; }
+            .main-image-wrapper { max-width: 400px; margin: 0 auto 16px; }
+            .thumb-grid { justify-content: center; }
+          }
+
+          @media (max-width: 640px) {
+            .container { paddingLeft: 16px; paddingRight: 16px; }
+            .book-title { fontSize: 22px; }
+            .final-price { fontSize: 28px; }
+            .meta-grid { gridTemplateColumns: 1fr; }
+            .action-btns { flexDirection: column; }
+            .add-to-cart-btn { width: 100%; order: 1; }
+            .wishlist-btn { width: 100%; order: 2; padding: 12px !important; }
+          }
+        `}</style>
       </div>
 
       {/* TABS */}
@@ -267,7 +321,7 @@ export default function BookDetailPage({ params }) {
                   <div key={review._id} style={{ padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
                       <img 
-                        src={review.user?.avatar || 'https://placehold.co/40x40?text=Avatar'} 
+                        src={review.user?.avatar || 'https://placehold.co/400x400?text=Avatar'} 
                         alt=""
                         style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} 
                         onError={(e) => {

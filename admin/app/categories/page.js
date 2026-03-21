@@ -13,7 +13,7 @@ export default function CategoriesManagement() {
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   
-  const initialForm = { name: '', description: '', icon: '', parentCategory: '' };
+  const initialForm = { name: '', description: '', icon: '', parent: '' };
   const [form, setForm] = useState(initialForm);
 
   const fetchCategories = async () => {
@@ -43,7 +43,7 @@ export default function CategoriesManagement() {
 
   const handleOpenModal = (cat = null) => {
     if (cat) {
-      setForm({ ...cat, parentCategory: cat.parentCategory?._id || '' });
+      setForm({ ...cat, parent: cat.parent?._id || '' });
       setIsEditing(true);
     } else {
       setForm(initialForm);
@@ -57,7 +57,7 @@ export default function CategoriesManagement() {
     setSaving(true);
     try {
       const data = { ...form };
-      if (!data.parentCategory) delete data.parentCategory;
+      if (!data.parent) delete data.parent;
 
       if (isEditing) {
         await categoryAPI.update(form._id, data);
@@ -145,7 +145,7 @@ export default function CategoriesManagement() {
               </div>
               <div className="form-group">
                 <label className="form-label">Danh mục cha (Không bắt buộc)</label>
-                <select className="form-control" value={form.parentCategory} onChange={e => setForm({...form, parentCategory: e.target.value})}>
+                <select className="form-control" value={form.parent} onChange={e => setForm({...form, parent: e.target.value})}>
                   <option value="">-- Không có --</option>
                   {categories.filter(c => c._id !== form._id).map(cat => (
                     <option key={cat._id} value={cat._id}>{cat.name}</option>

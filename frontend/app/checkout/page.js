@@ -75,35 +75,33 @@ export default function CheckoutPage() {
 
   return (
     <div className="container" style={{ paddingTop: 32, paddingBottom: 48 }}>
-      <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 28 }}>💳 Thanh Toán</h1>
+      <h1 className="checkout-title">💳 Thanh Toán</h1>
 
       {/* Steps */}
-      <div style={{ display: 'flex', gap: 0, marginBottom: 36 }}>
+      <div className="steps-container">
         {[1, 2, 3].map((s) => {
           const labels = ['Địa chỉ', 'Thanh toán', 'Xác nhận'];
           const isActive = step >= s;
           return (
-            <div key={s} style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: isActive ? 'var(--primary)' : 'var(--border)', color: isActive ? 'white' : 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13, flexShrink: 0 }}>
-                  {step > s ? '✓' : s}
-                </div>
-                <span style={{ fontSize: 13, fontWeight: isActive ? 600 : 400, color: isActive ? 'var(--text-primary)' : 'var(--text-muted)' }}>{labels[s-1]}</span>
-                {s < 3 && <div style={{ flex: 1, height: 2, background: step > s ? 'var(--primary)' : 'var(--border)', marginLeft: 8 }}></div>}
+            <div key={s} className={`step-item ${isActive ? 'active' : ''}`}>
+              <div className="step-circle">
+                {step > s ? '✓' : s}
               </div>
+              <span className="step-label">{labels[s-1]}</span>
+              {s < 3 && <div className={`step-line ${step > s ? 'active' : ''}`}></div>}
             </div>
           );
         })}
       </div>
 
-      <div className="layout-with-sidebar" style={{ gridTemplateColumns: '1fr 360px' }}>
+      <div className="checkout-grid">
         {/* Main */}
-        <div>
+        <div className="checkout-main">
           {/* Step 1: Shipping Address */}
           {step === 1 && (
-            <div className="card" style={{ padding: 28 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20 }}>📍 Địa chỉ giao hàng</h2>
-              <div className="grid-2-col">
+            <div className="card checkout-card">
+              <h2 className="step-title">📍 Địa chỉ giao hàng</h2>
+              <div className="form-grid-2">
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label">Họ và tên *</label>
                   <input className="form-control" placeholder="Nguyễn Văn A" value={form.fullName} onChange={e => setForm(f => ({ ...f, fullName: e.target.value }))} />
@@ -117,7 +115,7 @@ export default function CheckoutPage() {
                 <label className="form-label">Địa chỉ *</label>
                 <input className="form-control" placeholder="Số nhà, tên đường" value={form.street} onChange={e => setForm(f => ({ ...f, street: e.target.value }))} />
               </div>
-              <div className="grid-3-col">
+              <div className="form-grid-3">
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label">Phường/Xã</label>
                   <input className="form-control" placeholder="Phường Bến Nghé" value={form.ward} onChange={e => setForm(f => ({ ...f, ward: e.target.value }))} />
@@ -131,7 +129,7 @@ export default function CheckoutPage() {
                   <input className="form-control" placeholder="TP. Hồ Chí Minh" value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} />
                 </div>
               </div>
-              <button className="btn btn-primary btn-lg" style={{ marginTop: 24 }} onClick={() => setStep(2)}>
+              <button className="btn btn-primary btn-lg checkout-btn" onClick={() => setStep(2)}>
                 Tiếp theo: Chọn thanh toán →
               </button>
             </div>
@@ -139,8 +137,8 @@ export default function CheckoutPage() {
 
           {/* Step 2: Payment */}
           {step === 2 && (
-            <div className="card" style={{ padding: 28 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20 }}>💳 Phương thức thanh toán</h2>
+            <div className="card checkout-card">
+              <h2 className="step-title">💳 Phương thức thanh toán</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {PAYMENT_METHODS.map(method => (
                   <label key={method.value} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: 16, border: `2px solid ${paymentMethod === method.value ? 'var(--primary)' : 'var(--border)'}`, borderRadius: 12, cursor: 'pointer', transition: 'var(--transition)', background: paymentMethod === method.value ? 'rgba(231,76,60,0.04)' : 'white' }}>
@@ -152,7 +150,7 @@ export default function CheckoutPage() {
                   </label>
                 ))}
               </div>
-              <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
+              <div className="checkout-actions">
                 <button className="btn btn-ghost" onClick={() => setStep(1)}>← Quay lại</button>
                 <button className="btn btn-primary btn-lg" onClick={() => setStep(3)}>Xem lại đơn hàng →</button>
               </div>
@@ -161,10 +159,10 @@ export default function CheckoutPage() {
 
           {/* Step 3: Confirm */}
           {step === 3 && (
-            <div className="card" style={{ padding: 28 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20 }}>✅ Xác nhận đơn hàng</h2>
+            <div className="card checkout-card">
+              <h2 className="step-title">✅ Xác nhận đơn hàng</h2>
 
-              <div style={{ background: 'var(--bg)', borderRadius: 12, padding: 16, marginBottom: 20 }}>
+              <div className="checkout-info-block">
                 <div style={{ fontWeight: 700, marginBottom: 8 }}>📍 Địa chỉ giao hàng:</div>
                 <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
                   {form.fullName} | {form.phone}<br/>
@@ -172,7 +170,7 @@ export default function CheckoutPage() {
                 </p>
               </div>
 
-              <div style={{ background: 'var(--bg)', borderRadius: 12, padding: 16, marginBottom: 20 }}>
+              <div className="checkout-info-block">
                 <div style={{ fontWeight: 700, marginBottom: 8 }}>💳 Phương thức thanh toán:</div>
                 <p style={{ fontSize: 14 }}>{PAYMENT_METHODS.find(m => m.value === paymentMethod)?.label}</p>
               </div>
@@ -180,18 +178,18 @@ export default function CheckoutPage() {
               <div style={{ marginBottom: 20 }}>
                 <div style={{ fontWeight: 700, marginBottom: 12 }}>📦 Sản phẩm:</div>
                 {cart.items.map(item => (
-                  <div key={item._id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '1px solid var(--border-light)' }}>
-                    <img src={item.book.thumbnail || ''} alt="" style={{ width: 48, height: 64, objectFit: 'cover', borderRadius: 6 }} />
+                  <div key={item._id} className="checkout-item-row">
+                    <img src={item.book.thumbnail || ''} alt="" className="checkout-item-img" />
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600 }}>{item.book.title}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.4 }}>{item.book.title}</div>
                       <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>x{item.quantity}</div>
                     </div>
-                    <div style={{ fontWeight: 700, color: 'var(--primary)' }}>{formatPrice(item.itemTotal)}</div>
+                    <div className="checkout-item-total">{formatPrice(item.itemTotal)}</div>
                   </div>
                 ))}
               </div>
 
-              <div style={{ display: 'flex', gap: 12 }}>
+              <div className="checkout-actions">
                 <button className="btn btn-ghost" onClick={() => setStep(2)}>← Quay lại</button>
                 <button className="btn btn-primary btn-lg" onClick={handleSubmit} disabled={submitting}>
                   {submitting ? '⏳ Đang xử lý...' : '🎉 Đặt Hàng Ngay'}
@@ -201,36 +199,87 @@ export default function CheckoutPage() {
           )}
         </div>
 
-        {/* Summary */}
-        <div className="card" style={{ padding: 24, height: 'fit-content', position: 'sticky', top: 80 }}>
-          <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 16 }}>Đơn hàng</h3>
-          {cart.items.slice(0, 3).map(item => (
-            <div key={item._id} style={{ display: 'flex', gap: 10, marginBottom: 12, fontSize: 13 }}>
-              <img src={item.book.thumbnail || ''} alt="" style={{ width: 40, height: 52, objectFit: 'cover', borderRadius: 6 }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{item.book.title}</div>
-                <div style={{ color: 'var(--text-muted)' }}>x{item.quantity} | {formatPrice(item.itemTotal)}</div>
-              </div>
+        {/* Summary Side */}
+        <div className="checkout-side">
+          <div className="card summary-card">
+            <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 16 }}>Tóm tắt đơn hàng</h3>
+            <div className="summary-items-list">
+              {cart.items.slice(0, 3).map(item => (
+                <div key={item._id} style={{ display: 'flex', gap: 10, marginBottom: 12, fontSize: 13 }}>
+                  <img src={item.book.thumbnail || ''} alt="" className="summary-item-img" />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{item.book.title}</div>
+                    <div style={{ color: 'var(--text-muted)' }}>x{item.quantity} | {formatPrice(item.itemTotal)}</div>
+                  </div>
+                </div>
+              ))}
+              {cart.items.length > 3 && <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12 }}>+{cart.items.length - 3} sản phẩm khác</div>}
             </div>
-          ))}
-          {cart.items.length > 3 && <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12 }}>+{cart.items.length - 3} sản phẩm khác</div>}
-          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 10, fontSize: 14 }}>
-            {[
-              ['Tạm tính:', formatPrice(cart.subtotal)],
-              ['Phí vận chuyển:', shippingFee === 0 ? 'MIỄN PHÍ' : formatPrice(shippingFee)],
-            ].map(([label, value]) => (
-              <div key={label} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>{label}</span>
-                <span style={{ fontWeight: 600, color: value === 'MIỄN PHÍ' ? 'var(--success)' : 'inherit' }}>{value}</span>
-              </div>
-            ))}
-          </div>
-          <div style={{ borderTop: '2px solid var(--border)', marginTop: 12, paddingTop: 12, display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontWeight: 800, fontSize: 16 }}>Tổng:</span>
-            <span style={{ fontWeight: 900, fontSize: 20, color: 'var(--primary)' }}>{formatPrice(cart.subtotal + shippingFee)}</span>
+            
+            <div className="summary-totals">
+              {[
+                ['Tạm tính:', formatPrice(cart.subtotal)],
+                ['Phí vận chuyển:', shippingFee === 0 ? 'MIỄN PHÍ' : formatPrice(shippingFee)],
+              ].map(([label, value]) => (
+                <div key={label} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>{label}</span>
+                  <span style={{ fontWeight: 600, color: value === 'MIỄN PHÍ' ? 'var(--success)' : 'inherit' }}>{value}</span>
+                </div>
+              ))}
+            </div>
+            <div className="summary-final">
+              <span style={{ fontWeight: 800, fontSize: 16 }}>Tổng:</span>
+              <span style={{ fontWeight: 900, fontSize: 20, color: 'var(--primary)' }}>{formatPrice(cart.subtotal + shippingFee)}</span>
+            </div>
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .checkout-title { font-size: 24px; fontWeight: 800; marginBottom: 28px; }
+        .steps-container { display: flex; gap: 0; marginBottom: 36px; overflow-x: auto; padding-bottom: 8px; }
+        .step-item { flex: 1; display: flex; alignItems: center; min-width: 120px; }
+        .step-circle { width: 28px; height: 28px; borderRadius: 50%; background: var(--border); color: var(--text-muted); display: flex; alignItems: center; justifyContent: center; fontWeight: 700; fontSize: 13px; flexShrink: 0; }
+        .step-item.active .step-circle { background: var(--primary); color: white; }
+        .step-label { fontSize: 13px; fontWeight: 400; color: var(--text-muted); marginLeft: 8px; white-space: nowrap; }
+        .step-item.active .step-label { fontWeight: 600; color: var(--text-primary); }
+        .step-line { flex: 1; height: 2px; background: var(--border); marginLeft: 12px; margin-right: 12px; }
+        .step-line.active { background: var(--primary); }
+        
+        .checkout-grid { display: grid; gridTemplateColumns: 1fr 360px; gap: 28px; }
+        .checkout-card { padding: 28px; }
+        .step-title { fontSize: 18px; fontWeight: 700; marginBottom: 20px; }
+        .form-grid-2 { display: grid; gridTemplateColumns: 1fr 1fr; gap: 16px; }
+        .form-grid-3 { display: grid; gridTemplateColumns: 1fr 1fr 1fr; gap: 16px; marginTop: 16px; }
+        .checkout-btn { marginTop: 24px; }
+        .checkout-actions { display: flex; gap: 12px; marginTop: 24px; }
+        .checkout-info-block { background: var(--bg); borderRadius: 12px; padding: 16px; marginBottom: 20px; }
+        .checkout-item-row { display: flex; alignItems: center; gap: 12px; padding: 8px 0; borderBottom: 1px solid var(--border-light); }
+        .checkout-item-img { width: 48px; height: 64px; objectFit: cover; borderRadius: 6px; }
+        .checkout-item-total { fontWeight: 700; color: var(--primary); }
+        
+        .summary-card { padding: 24px; position: sticky; top: 80px; }
+        .summary-item-img { width: 40px; height: 52px; objectFit: cover; borderRadius: 6px; }
+        .summary-totals { borderTop: 1px solid var(--border); paddingTop: 14px; display: flex; flexDirection: column; gap: 10px; fontSize: 14px; }
+        .summary-final { borderTop: 2px solid var(--border); marginTop: 12px; paddingTop: 12px; display: flex; justifyContent: space-between; }
+
+        @media (max-width: 991px) {
+          .checkout-grid { gridTemplateColumns: 1fr; }
+          .checkout-side { order: -1; }
+          .summary-card { position: static; marginBottom: 12px; }
+          .summary-items-list { display: none; }
+        }
+
+        @media (max-width: 640px) {
+          .container { paddingLeft: 16px; paddingRight: 16px; }
+          .checkout-title { fontSize: 20px; }
+          .checkout-card { padding: 20px; }
+          .form-grid-2, .form-grid-3 { gridTemplateColumns: 1fr; gap: 12px; }
+          .checkout-actions { flexDirection: column; }
+          .checkout-actions button { width: 100%; }
+          .steps-container { marginHorizontal: -16px; paddingHorizontal: 16px; }
+        }
+      `}</style>
     </div>
   );
 }
